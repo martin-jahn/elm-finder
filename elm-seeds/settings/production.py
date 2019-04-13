@@ -29,3 +29,6 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [
         ("django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader"),
     )
 ]
+
+
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
