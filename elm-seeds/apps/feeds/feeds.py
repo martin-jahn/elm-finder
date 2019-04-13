@@ -9,6 +9,7 @@ from apps.package.models import Package
 
 class RssLatestPackagesFeed(Feed):
     """RSS Feed for the packages"""
+
     title = "Latest {0} packages added".format(settings.FRAMEWORK_TITLE)
     link = "/packages/latest/"
     description = "The last 15 packages added"
@@ -32,5 +33,6 @@ class RssLatestPackagesFeed(Feed):
 
 class AtomLatestPackagesFeed(RssLatestPackagesFeed):
     """Atom feed for the packages"""
+
     feed_type = Atom1Feed
     subtitle = RssLatestPackagesFeed.description

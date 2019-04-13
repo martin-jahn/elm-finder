@@ -1,11 +1,10 @@
 from django.conf import settings
 from django.test import TestCase
 
-from apps.searchv2.utils import remove_prefix, clean_title
+from apps.searchv2.utils import clean_title, remove_prefix
 
 
 class UtilFunctionTest(TestCase):
-
     def setUp(self):
         self.values = []
         for value in ["-me", ".me", "/me", "_me"]:

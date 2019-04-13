@@ -1,26 +1,25 @@
-from datetime import datetime, timedelta
 import json
 import re
+from datetime import datetime, timedelta
+from distutils.version import LooseVersion as versioner
 
-from django.core.cache import cache
+import requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
-from distutils.version import LooseVersion as versioner
-import requests
-
-from apps.core.utils import STATUS_CHOICES, status_choices_switch
 from apps.core.models import BaseModel
+from apps.core.utils import STATUS_CHOICES, status_choices_switch
 from apps.package.repos import get_repo_for_repo_url
 from apps.package.signals import signal_fetch_latest_metadata
-from apps.package.utils import get_version, get_pypi_version, normalize_license
+from apps.package.utils import get_pypi_version, get_version, normalize_license
 
-repo_url_help_text = settings.PACKAGINATOR_HELP_TEXT['REPO_URL']
-pypi_url_help_text = settings.PACKAGINATOR_HELP_TEXT['PYPI_URL']
+repo_url_help_text = settings.PACKAGINATOR_HELP_TEXT["REPO_URL"]
+pypi_url_help_text = settings.PACKAGINATOR_HELP_TEXT["PYPI_URL"]
 
 
 class NoPyPiVersionFound(Exception):
@@ -36,8 +35,8 @@ class Category(BaseModel):
     show_pypi = models.BooleanField(_("Show pypi stats & version"), default=True)
 
     class Meta:
-        ordering = ['title']
-        verbose_name_plural = 'Categories'
+        ordering = ["title"]
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.title
@@ -50,19 +49,26 @@ class Category(BaseModel):
 class Package(BaseModel):
 
     title = models.CharField(_("Title"), max_length=100)
-    slug = models.SlugField(_("Slug"), help_text="Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens. Values will be converted to lowercase.", unique=True)
+    slug = models.SlugField(
+        _("Slug"),
+        help_text="Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens. Values will be converted to lowercase.",
+        unique=True,
+    )
     category = models.ForeignKey(Category, verbose_name="Installation")
     repo_description = models.TextField(_("Repo Description"), blank=True)
     repo_url = models.URLField(_("repo URL"), help_text=repo_url_help_text, blank=True, unique=True)
     repo_watchers = models.IntegerField(_("Stars"), default=0)
     repo_forks = models.IntegerField(_("repo forks"), default=0)
-    pypi_url = models.CharField(_("PyPI slug"), max_length=255, help_text=pypi_url_help_text, blank=True, default='')
+    pypi_url = models.CharField(_("PyPI slug"), max_length=255, help_text=pypi_url_help_text, blank=True, default="")
     pypi_downloads = models.IntegerField(_("Pypi downloads"), default=0)
-    participants = models.TextField(_("Participants"),
-                        help_text="List of collaborats/participants on the project", blank=True)
+    participants = models.TextField(
+        _("Participants"), help_text="List of collaborats/participants on the project", blank=True
+    )
     usage = models.ManyToManyField(User, blank=True)
     created_by = models.ForeignKey(User, blank=True, null=True, related_name="creator", on_delete=models.SET_NULL)
-    last_modified_by = models.ForeignKey(User, blank=True, null=True, related_name="modifier", on_delete=models.SET_NULL)
+    last_modified_by = models.ForeignKey(
+        User, blank=True, null=True, related_name="modifier", on_delete=models.SET_NULL
+    )
     last_fetched = models.DateTimeField(blank=True, null=True, default=timezone.now)
     documentation_url = models.URLField(_("Documentation URL"), blank=True, null=True, default="")
 
@@ -77,7 +83,7 @@ class Package(BaseModel):
 
         name = self.pypi_url.replace("http://pypi.python.org/pypi/", "")
         if "/" in name:
-            return name[:name.index("/")]
+            return name[: name.index("/")]
         return name
 
     def last_updated(self):
@@ -86,7 +92,7 @@ class Package(BaseModel):
         if last_commit is not None:
             return last_commit
         try:
-            last_commit = self.commit_set.latest('commit_date').commit_date
+            last_commit = self.commit_set.latest("commit_date").commit_date
             if last_commit:
                 cache.set(cache_name, last_commit)
                 return last_commit
@@ -115,17 +121,14 @@ class Package(BaseModel):
         return (x.grid for x in self.gridpackage_set.all())
 
     def repo_name(self):
-        return re.sub(self.repo.url_regex, '', self.repo_url)
+        return re.sub(self.repo.url_regex, "", self.repo_url)
 
     def repo_info(self):
-        return dict(
-            username=self.repo_name().split('/')[0],
-            repo_name=self.repo_name().split('/')[1],
-        )
+        return dict(username=self.repo_name().split("/")[0], repo_name=self.repo_name().split("/")[1])
 
     def participant_list(self):
 
-        return self.participants.split(',')
+        return self.participants.split(",")
 
     def get_usage_count(self):
         return self.usage.count()
@@ -136,9 +139,9 @@ class Package(BaseModel):
         if value is not None:
             return value
         now = datetime.now()
-        commits = self.commit_set.filter(
-            commit_date__gt=now - timedelta(weeks=52),
-        ).values_list('commit_date', flat=True)
+        commits = self.commit_set.filter(commit_date__gt=now - timedelta(weeks=52)).values_list(
+            "commit_date", flat=True
+        )
 
         weeks = [0] * 52
         for cdate in commits:
@@ -146,7 +149,7 @@ class Package(BaseModel):
             if age_weeks < 52:
                 weeks[age_weeks] += 1
 
-        value = ','.join(map(str, reversed(weeks)))
+        value = ",".join(map(str, reversed(weeks)))
         cache.set(cache_name, value)
         return value
 
@@ -167,22 +170,19 @@ class Package(BaseModel):
                     print((self, response.status_code))
                 return False
             release = json.loads(response.content)
-            info = release['info']
+            info = release["info"]
 
-            version, created = Version.objects.get_or_create(
-                package=self,
-                number=info['version']
-            )
+            version, created = Version.objects.get_or_create(package=self, number=info["version"])
 
             # add to versions
-            license = info['license']
-            if not info['license'] or not license.strip()  or 'UNKNOWN' == license.upper():
-                for classifier in info['classifiers']:
-                    if classifier.strip().startswith('License'):
+            license = info["license"]
+            if not info["license"] or not license.strip() or "UNKNOWN" == license.upper():
+                for classifier in info["classifiers"]:
+                    if classifier.strip().startswith("License"):
                         # Do it this way to cover people not quite following the spec
                         # at http://docs.python.org/distutils/setupscript.html#additional-meta-data
-                        license = classifier.strip().replace('License ::', '')
-                        license = license.replace('OSI Approved :: ', '')
+                        license = classifier.strip().replace("License ::", "")
+                        license = license.replace("OSI Approved :: ", "")
                         break
 
             if license and len(license) > 100:
@@ -190,21 +190,21 @@ class Package(BaseModel):
 
             version.license = license
 
-            #version stuff
+            # version stuff
             try:
-                url_data = release['urls'][0]
-                version.downloads = url_data['downloads']
-                version.upload_time = url_data['upload_time']
+                url_data = release["urls"][0]
+                version.downloads = url_data["downloads"]
+                version.upload_time = url_data["upload_time"]
             except IndexError:
                 # Not a real release so we just guess the upload_time.
                 version.upload_time = version.created
 
-            for classifier in info['classifiers']:
-                if classifier.startswith('Development Status'):
+            for classifier in info["classifiers"]:
+                if classifier.startswith("Development Status"):
                     version.development_status = status_choices_switch(classifier)
                     break
-            for classifier in info['classifiers']:
-                if classifier.startswith('Programming Language :: Python :: 3'):
+            for classifier in info["classifiers"]:
+                if classifier.startswith("Programming Language :: Python :: 3"):
                     version.supports_python3 = True
                     break
             version.save()
@@ -260,7 +260,6 @@ class Package(BaseModel):
         """ Gets data needed in API v2 calls """
         return self.last_released().pretty_status
 
-
     @property
     def pypi_ancient(self):
         release = self.last_released()
@@ -276,8 +275,8 @@ class Package(BaseModel):
         return None
 
     class Meta:
-        ordering = ['title']
-        get_latest_by = 'id'
+        ordering = ["title"]
+        get_latest_by = "id"
 
     def __str__(self):
         return self.title
@@ -291,7 +290,7 @@ class Package(BaseModel):
         return self.commit_set.latest()
 
     def commits_over_52_listed(self):
-        return [int(x) for x in self.commits_over_52().split(',')]
+        return [int(x) for x in self.commits_over_52().split(",")]
 
 
 class PackageExample(BaseModel):
@@ -299,11 +298,13 @@ class PackageExample(BaseModel):
     package = models.ForeignKey(Package)
     title = models.CharField(_("Title"), max_length=100)
     url = models.URLField(_("URL"))
-    active = models.BooleanField(_("Active"), default=True, help_text="Moderators have to approve links before they are provided")
+    active = models.BooleanField(
+        _("Active"), default=True, help_text="Moderators have to approve links before they are provided"
+    )
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
 
     def __str__(self):
         return self.title
@@ -319,11 +320,13 @@ class Commit(BaseModel):
 
     package = models.ForeignKey(Package)
     commit_date = models.DateTimeField(_("Commit Date"))
-    commit_hash = models.CharField(_("Commit Hash"), help_text="Example: Git sha or SVN commit id", max_length=150, blank=True, default="")
+    commit_hash = models.CharField(
+        _("Commit Hash"), help_text="Example: Git sha or SVN commit id", max_length=150, blank=True, default=""
+    )
 
     class Meta:
-        ordering = ['-commit_date']
-        get_latest_by = 'commit_date'
+        ordering = ["-commit_date"]
+        get_latest_by = "commit_date"
 
     def __str__(self):
         return "Commit for '%s' on %s" % (self.package.title, str(self.commit_date))
@@ -367,15 +370,17 @@ class Version(BaseModel):
     downloads = models.IntegerField(_("downloads"), default=0)
     license = models.CharField(_("license"), max_length=100)
     hidden = models.BooleanField(_("hidden"), default=False)
-    upload_time = models.DateTimeField(_("upload_time"), help_text=_("When this was uploaded to PyPI"), blank=True, null=True)
+    upload_time = models.DateTimeField(
+        _("upload_time"), help_text=_("When this was uploaded to PyPI"), blank=True, null=True
+    )
     development_status = models.IntegerField(_("Development Status"), choices=STATUS_CHOICES, default=0)
     supports_python3 = models.BooleanField(_("Supports Python 3"), default=False)
 
     objects = VersionManager()
 
     class Meta:
-        get_latest_by = 'upload_time'
-        ordering = ['-upload_time']
+        get_latest_by = "upload_time"
+        ordering = ["-upload_time"]
 
     @property
     def pretty_license(self):

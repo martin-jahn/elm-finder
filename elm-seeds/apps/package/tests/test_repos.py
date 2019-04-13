@@ -1,23 +1,15 @@
-import json
-
 from django.test import TestCase
 
+from apps.package.models import Category, Package
 from apps.package.repos import get_repo_for_repo_url
-from apps.package.repos.bitbucket import repo_handler as bitbucket_handler
-from apps.package.repos.github import repo_handler as github_handler
 from apps.package.repos.base_handler import BaseHandler
 from apps.package.repos.unsupported import UnsupportedHandler
-from apps.package.models import Commit, Package, Category
 
 
 class BaseBase(TestCase):
-
     def setUp(self):
 
-        self.category = Category.objects.create(
-            title='dummy',
-            slug='dummy'
-        )
+        self.category = Category.objects.create(title="dummy", slug="dummy")
         self.category.save()
 
 
@@ -28,7 +20,7 @@ class TestBaseHandler(BaseBase):
             title="Django Piston",
             slug="django-piston",
             repo_url="https://bitbucket.org/jespern/django-piston",
-            category=self.category
+            category=self.category,
         )
 
     def test_not_implemented(self):
@@ -177,6 +169,7 @@ http://www.dataportal.it"""
         for sample in samples.split("\n"):
             self.assertTrue(isinstance(get_repo_for_repo_url(sample), UnsupportedHandler))
 
+
 """
 class TestBitbucketRepo(TestBaseHandler):
     def setUp(self):
@@ -203,14 +196,12 @@ class TestBitbucketRepo(TestBaseHandler):
         self.assertEquals(package.participants, "django")
 """
 
+
 class TestGithubRepo(TestBaseHandler):
     def setUp(self):
         super(TestGithubRepo, self).setUp()
         self.package = Package.objects.create(
-            title="Django",
-            slug="django",
-            repo_url="https://github.com/django/django",
-            category=self.category
+            title="Django", slug="django", repo_url="https://github.com/django/django", category=self.category
         )
 
     # def test_fetch_commits(self):

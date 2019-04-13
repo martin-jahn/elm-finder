@@ -1,12 +1,11 @@
 from django.test import TestCase
 
 from apps.package.tests import initial_data
-from apps.searchv2.models import SearchV2
 from apps.searchv2.builders import build_1
+from apps.searchv2.models import SearchV2
 
 
 class BuilderTest(TestCase):
-
     def setUp(self):
         initial_data.load()
 

@@ -43,9 +43,10 @@ class Profile(BaseModel):
         If url doesn't exist return None.
         """
         url_mapping = {
-            'Github': self.github_account,
-            'BitBucket': self.bitbucket_url,
-            'Google Code': self.google_code_url}
+            "Github": self.github_account,
+            "BitBucket": self.bitbucket_url,
+            "Google Code": self.google_code_url,
+        }
         return url_mapping.get(repo.title)
 
     def my_packages(self):
@@ -71,67 +72,67 @@ class Profile(BaseModel):
 
     @property
     def can_add_package(self):
-        if getattr(settings, 'RESTRICT_PACKAGE_EDITORS', False):
-            return self.user.has_perm('package.add_package')
+        if getattr(settings, "RESTRICT_PACKAGE_EDITORS", False):
+            return self.user.has_perm("package.add_package")
         # anyone can add
         return True
 
     @property
     def can_edit_package(self):
-        if getattr(settings, 'RESTRICT_PACKAGE_EDITORS', False):
+        if getattr(settings, "RESTRICT_PACKAGE_EDITORS", False):
             # this is inconsistent, fix later?
-            return self.user.has_perm('package.change_package')
+            return self.user.has_perm("package.change_package")
         # anyone can edit
         return True
 
     # Grids
     @property
     def can_edit_grid(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.change_grid')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.change_grid")
         return True
 
     @property
     def can_add_grid(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.add_grid')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.add_grid")
         return True
 
     # Grid Features
     @property
     def can_add_grid_feature(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.add_feature')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.add_feature")
         return True
 
     @property
     def can_edit_grid_feature(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.change_feature')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.change_feature")
         return True
 
     @property
     def can_delete_grid_feature(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.delete_feature')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.delete_feature")
         return True
 
     # Grid Packages
     @property
     def can_add_grid_package(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.add_gridpackage')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.add_gridpackage")
         return True
 
     @property
     def can_delete_grid_package(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.delete_gridpackage')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.delete_gridpackage")
         return True
 
     # Grid Element (cells in grid)
     @property
     def can_edit_grid_element(self):
-        if getattr(settings, 'RESTRICT_GRID_EDITORS', False):
-            return self.user.has_perm('grid.change_element')
+        if getattr(settings, "RESTRICT_GRID_EDITORS", False):
+            return self.user.has_perm("grid.change_element")
         return True

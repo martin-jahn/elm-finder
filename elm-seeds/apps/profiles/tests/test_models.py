@@ -8,6 +8,7 @@ class MockGithubRepo(object):
 class TestModel(TestCase):
     def test_profile(self):
         from apps.profiles.models import Profile
+
         p = Profile()
         self.assertEqual(len(p.my_packages()), 0)
 

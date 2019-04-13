@@ -3,31 +3,32 @@
 import collections
 import functools
 from itertools import filterfalse
-from heapq import nsmallest
-from operator import itemgetter
+
 
 class Counter(dict):
-    'Mapping where default values are zero'
+    "Mapping where default values are zero"
+
     def __missing__(self, key):
         return 0
 
+
 def lru_cache(maxsize=100):
-    '''Least-recently-used cache decorator.
+    """Least-recently-used cache decorator.
 
     Arguments to the cached function must be hashable.
     Cache performance statistics stored in f.hits and f.misses.
     Clear the cache with f.clear().
     http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used
 
-    '''
+    """
     maxqueue = maxsize * 10
-    def decorating_function(user_function,
-            len=len, iter=iter, tuple=tuple, sorted=sorted, KeyError=KeyError):
-        cache = {}                  # mapping of args to results
-        queue = collections.deque() # order that keys have been used
-        refcount = Counter()        # times each key is in the queue
-        sentinel = object()         # marker for looping around the queue
-        kwd_mark = object()         # separate positional and keyword args
+
+    def decorating_function(user_function, len=len, iter=iter, tuple=tuple, sorted=sorted, KeyError=KeyError):
+        cache = {}  # mapping of args to results
+        queue = collections.deque()  # order that keys have been used
+        refcount = Counter()  # times each key is in the queue
+        sentinel = object()  # marker for looping around the queue
+        kwd_mark = object()  # separate positional and keyword args
 
         # lookup optimizations (ugly but fast)
         queue_append, queue_popleft = queue.append, queue.popleft
@@ -67,11 +68,9 @@ def lru_cache(maxsize=100):
             if len(queue) > maxqueue:
                 refcount.clear()
                 queue_appendleft(sentinel)
-                for key in filterfalse(refcount.__contains__,
-                                        iter(queue_pop, sentinel)):
+                for key in filterfalse(refcount.__contains__, iter(queue_pop, sentinel)):
                     queue_appendleft(key)
                     refcount[key] = 1
-
 
             return result
 
@@ -84,4 +83,5 @@ def lru_cache(maxsize=100):
         wrapper.hits = wrapper.misses = 0
         wrapper.clear = clear
         return wrapper
+
     return decorating_function

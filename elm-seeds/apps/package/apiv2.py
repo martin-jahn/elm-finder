@@ -1,5 +1,4 @@
 from django.db.models import Count
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.package.models import Category, Package
@@ -31,5 +30,3 @@ class Python3ListAPIView(ListAPIView):
         packages = packages.annotate(usage_count=Count("usage"))
         packages.order_by("-repo_watchers", "title")
         return packages
-
-

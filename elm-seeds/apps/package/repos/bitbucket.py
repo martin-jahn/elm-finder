@@ -1,11 +1,10 @@
-from datetime import datetime, timedelta
 import re
+from datetime import datetime, timedelta
 from warnings import warn
 
+import requests
 
 from .base_handler import BaseHandler
-
-import requests
 
 API_TARGET = "https://api.bitbucket.org/1.0/repositories"
 
@@ -13,11 +12,11 @@ descendants_re = re.compile(r"Forks/Queues \((?P<descendants>\d+)\)", re.IGNOREC
 
 
 class BitbucketHandler(BaseHandler):
-    title = 'Bitbucket'
-    url_regex = 'https://bitbucket.org/'
-    url = 'https://bitbucket.org'
-    repo_regex = r'https://bitbucket.org/[\w\-\_]+/([\w\-\_]+)/{0,1}'
-    slug_regex = r'https://bitbucket.org/[\w\-\_]+/([\w\-\_]+)/{0,1}'
+    title = "Bitbucket"
+    url_regex = "https://bitbucket.org/"
+    url = "https://bitbucket.org"
+    repo_regex = r"https://bitbucket.org/[\w\-\_]+/([\w\-\_]+)/{0,1}"
+    slug_regex = r"https://bitbucket.org/[\w\-\_]+/([\w\-\_]+)/{0,1}"
 
     def _get_bitbucket_commits(self, package):
         repo_name = package.repo_name()
@@ -35,6 +34,7 @@ class BitbucketHandler(BaseHandler):
 
     def fetch_commits(self, package):
         from apps.package.models import Commit  # Import placed here to avoid circular dependencies
+
         for commit in self._get_bitbucket_commits(package):
             timestamp = commit["timestamp"].split("+")
             if len(timestamp) > 1:
@@ -46,9 +46,9 @@ class BitbucketHandler(BaseHandler):
         #  ugly way to get 52 weeks of commits
         # TODO - make this better
         now = datetime.now()
-        commits = package.commit_set.filter(
-            commit_date__gt=now - timedelta(weeks=52),
-        ).values_list('commit_date', flat=True)
+        commits = package.commit_set.filter(commit_date__gt=now - timedelta(weeks=52)).values_list(
+            "commit_date", flat=True
+        )
 
         weeks = [0] * 52
         for cdate in commits:
@@ -56,7 +56,7 @@ class BitbucketHandler(BaseHandler):
             if age_weeks < 52:
                 weeks[age_weeks] += 1
 
-        package.commit_list = ','.join(map(str, reversed(weeks)))
+        package.commit_list = ",".join(map(str, reversed(weeks)))
         package.save()
 
     def fetch_metadata(self, package):
@@ -86,7 +86,7 @@ class BitbucketHandler(BaseHandler):
             data = self.get_json(url)
         except requests.exceptions.HTTPError:
             return package
-        package.repo_forks = len(data['forks'])
+        package.repo_forks = len(data["forks"])
 
         # get the followers of a repo
         url = "{0}followers/".format(target)
@@ -94,7 +94,7 @@ class BitbucketHandler(BaseHandler):
             data = self.get_json(url)
         except requests.exceptions.HTTPError:
             return package
-        package.repo_watchers = data['count']
+        package.repo_watchers = data["count"]
 
         # Getting participants
         try:
@@ -103,5 +103,6 @@ class BitbucketHandler(BaseHandler):
             package.participants = ""
 
         return package
+
 
 repo_handler = BitbucketHandler()

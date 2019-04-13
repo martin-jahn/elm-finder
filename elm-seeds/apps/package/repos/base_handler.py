@@ -8,7 +8,6 @@ import requests
 
 
 class BaseHandler(object):
-
     def __str__(self):
         return self.title
 
@@ -65,7 +64,7 @@ class BaseHandler(object):
 
                 example:
         """
-        return ''
+        return ""
 
     @property
     def repo_regex(self):
@@ -82,17 +81,14 @@ class BaseHandler(object):
         repo_url = profile.url_for_repo(self)
         if repo_url:
             from apps.package.models import Package
-            regex = r'^{0},|,{0},|{0}$'.format(repo_url)
+
+            regex = r"^{0},|,{0},|{0}$".format(repo_url)
             return list(Package.objects.filter(participants__regex=regex, repo_url__regex=self.repo_regex))
         else:
             return []
 
     def serialize(self):
-        return {
-            "title": self.title,
-            "url": self.url,
-            "repo_regex": self.repo_regex,
-        }
+        return {"title": self.title, "url": self.url, "repo_regex": self.repo_regex}
 
     def get_json(self, target):
         """
@@ -102,4 +98,3 @@ class BaseHandler(object):
         if r.status_code != 200:
             r.raise_for_status()
         return json.loads(r.content)
-

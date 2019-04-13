@@ -4,23 +4,17 @@ from time import sleep
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.mail import send_mail
-
 from github3 import login as github_login
 
-from apps.package.models import Package
 from apps.core.utils import healthcheck
+from apps.package.models import Package
 
 logger = logging.getLogger(__name__)
 
 
 class PackageUpdaterException(Exception):
     def __init__(self, error, title):
-        log_message = "For {title}, {error_type}: {error}".format(
-            title=title,
-            error_type=type(error),
-            error=error
-        )
+        log_message = "For {title}, {error_type}: {error}".format(title=title, error_type=type(error), error=error)
         logging.critical(log_message)
         logging.exception(error)
 

@@ -1,68 +1,96 @@
 # -*- coding: utf-8 -*-
 
 
-from django.db import models, migrations
-import apps.core.fields
 import django.utils.timezone
+from django.db import migrations, models
+
+import apps.core.fields
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('grid', '0001_initial'),
-        ('package', '0001_initial'),
-    ]
+    dependencies = [("grid", "0001_initial"), ("package", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Dpotw',
+            name="Dpotw",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created', apps.core.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
-                ('modified', apps.core.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
-                ('start_date', models.DateField(verbose_name='Start Date')),
-                ('end_date', models.DateField(verbose_name='End Date')),
-                ('package', models.ForeignKey(to='package.Package')),
+                ("id", models.AutoField(verbose_name="ID", serialize=False, auto_created=True, primary_key=True)),
+                (
+                    "created",
+                    apps.core.fields.CreationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="created", editable=False, blank=True
+                    ),
+                ),
+                (
+                    "modified",
+                    apps.core.fields.ModificationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="modified", editable=False, blank=True
+                    ),
+                ),
+                ("start_date", models.DateField(verbose_name="Start Date")),
+                ("end_date", models.DateField(verbose_name="End Date")),
+                ("package", models.ForeignKey(to="package.Package")),
             ],
             options={
-                'ordering': ('-start_date', '-end_date'),
-                'get_latest_by': 'created',
-                'verbose_name': 'Django Package of the Week',
-                'verbose_name_plural': 'Django Packages of the Week',
+                "ordering": ("-start_date", "-end_date"),
+                "get_latest_by": "created",
+                "verbose_name": "Django Package of the Week",
+                "verbose_name_plural": "Django Packages of the Week",
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Gotw',
+            name="Gotw",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created', apps.core.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
-                ('modified', apps.core.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
-                ('start_date', models.DateField(verbose_name='Start Date')),
-                ('end_date', models.DateField(verbose_name='End Date')),
-                ('grid', models.ForeignKey(to='grid.Grid')),
+                ("id", models.AutoField(verbose_name="ID", serialize=False, auto_created=True, primary_key=True)),
+                (
+                    "created",
+                    apps.core.fields.CreationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="created", editable=False, blank=True
+                    ),
+                ),
+                (
+                    "modified",
+                    apps.core.fields.ModificationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="modified", editable=False, blank=True
+                    ),
+                ),
+                ("start_date", models.DateField(verbose_name="Start Date")),
+                ("end_date", models.DateField(verbose_name="End Date")),
+                ("grid", models.ForeignKey(to="grid.Grid")),
             ],
             options={
-                'ordering': ('-start_date', '-end_date'),
-                'get_latest_by': 'created',
-                'verbose_name': 'Grid of the Week',
-                'verbose_name_plural': 'Grids of the Week',
+                "ordering": ("-start_date", "-end_date"),
+                "get_latest_by": "created",
+                "verbose_name": "Grid of the Week",
+                "verbose_name_plural": "Grids of the Week",
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='PSA',
+            name="PSA",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created', apps.core.fields.CreationDateTimeField(default=django.utils.timezone.now, verbose_name='created', editable=False, blank=True)),
-                ('modified', apps.core.fields.ModificationDateTimeField(default=django.utils.timezone.now, verbose_name='modified', editable=False, blank=True)),
-                ('body_text', models.TextField(null=True, verbose_name='PSA Body Text', blank=True)),
+                ("id", models.AutoField(verbose_name="ID", serialize=False, auto_created=True, primary_key=True)),
+                (
+                    "created",
+                    apps.core.fields.CreationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="created", editable=False, blank=True
+                    ),
+                ),
+                (
+                    "modified",
+                    apps.core.fields.ModificationDateTimeField(
+                        default=django.utils.timezone.now, verbose_name="modified", editable=False, blank=True
+                    ),
+                ),
+                ("body_text", models.TextField(null=True, verbose_name="PSA Body Text", blank=True)),
             ],
             options={
-                'ordering': ('-created',),
-                'get_latest_by': 'created',
-                'verbose_name': 'Public Service Announcement',
-                'verbose_name_plural': 'Public Service Announcements',
+                "ordering": ("-created",),
+                "get_latest_by": "created",
+                "verbose_name": "Public Service Announcement",
+                "verbose_name_plural": "Public Service Announcements",
             },
             bases=(models.Model,),
         ),

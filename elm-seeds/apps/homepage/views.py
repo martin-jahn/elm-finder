@@ -1,16 +1,15 @@
 from random import sample
 
+import feedparser
 from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render
-
-import feedparser
+from django.views.generic import TemplateView
 
 from apps.core.decorators import lru_cache
 from apps.grid.models import Grid
-from apps.homepage.models import Dpotw, Gotw, PSA
+from apps.homepage.models import PSA, Dpotw, Gotw
 from apps.package.models import Category, Package, Version
-from django.views.generic import TemplateView
 
 
 class SitemapView(TemplateView):
@@ -20,14 +19,14 @@ class SitemapView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super(SitemapView, self).get_context_data(**kwargs)
-        data['packages'] = Package.objects.all()
-        data['grids'] = Grid.objects.all()
+        data["packages"] = Package.objects.all()
+        data["grids"] = Grid.objects.all()
         return data
 
 
 @lru_cache()
 def get_feed():
-    feed = 'http://opencomparison.blogspot.com/feeds/posts/default'
+    feed = "http://opencomparison.blogspot.com/feeds/posts/default"
     return feedparser.parse(feed)
 
 
@@ -54,7 +53,7 @@ def homepage(request, template_name="homepage.html"):
         # Get 5 random keys
         package_ids = sample(
             list(range(1, package_count + 1)),  # generate a list from 1 to package_count +1
-            min(package_count, 5)  # Get a sample of the smaller of 5 or the package count
+            min(package_count, 5),  # Get a sample of the smaller of 5 or the package count
         )
 
         # Get the random packages
@@ -87,12 +86,14 @@ def homepage(request, template_name="homepage.html"):
         blogpost_title = feed_result.entries[0].title
         blogpost_body = feed_result.entries[0].summary
     else:
-        blogpost_title = ''
-        blogpost_body = ''
+        blogpost_title = ""
+        blogpost_body = ""
 
-    return render(request,
-        template_name, {
-            "latest_packages": Package.objects.all().order_by('-created')[:5],
+    return render(
+        request,
+        template_name,
+        {
+            "latest_packages": Package.objects.all().order_by("-created")[:5],
             "random_packages": random_packages,
             "potw": potw,
             "gotw": gotw,
@@ -102,8 +103,11 @@ def homepage(request, template_name="homepage.html"):
             "categories": categories,
             "package_count": package_count,
             "py3_compat": Package.objects.filter(version__supports_python3=True).select_related().distinct().count(),
-            "latest_python3": Version.objects.filter(supports_python3=True).select_related("package").distinct().order_by("-created")[0:5]
-        }
+            "latest_python3": Version.objects.filter(supports_python3=True)
+            .select_related("package")
+            .distinct()
+            .order_by("-created")[0:5],
+        },
     )
 
 

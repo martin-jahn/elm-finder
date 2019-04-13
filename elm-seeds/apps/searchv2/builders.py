@@ -1,13 +1,12 @@
-from datetime import datetime, timedelta
 import json
-from sys import stdout
+from datetime import datetime, timedelta
 
 import requests
 
 from apps.grid.models import Grid
-from apps.package.models import Package, Commit
+from apps.package.models import Commit, Package
 from apps.searchv2.models import SearchV2
-from apps.searchv2.utils import remove_prefix, clean_title
+from apps.searchv2.utils import clean_title, remove_prefix
 
 
 def build_1():
@@ -21,10 +20,7 @@ def build_1():
     SearchV2.objects.filter(created__lte=last_week).delete()
     for package in Package.objects.filter():
 
-        obj, created = SearchV2.objects.get_or_create(
-            item_type="package",
-            slug=package.slug,
-        )
+        obj, created = SearchV2.objects.get_or_create(item_type="package", slug=package.slug)
         obj.slug_no_prefix = remove_prefix(package.slug)
         obj.clean_title = clean_title(remove_prefix(package.slug))
         obj.title = package.title
@@ -64,7 +60,7 @@ def build_1():
         r = requests.get(rtfd_url)
         if r.status_code == 200:
             data = json.loads(r.content)
-            if data['meta']['total_count']:
+            if data["meta"]["total_count"]:
                 weight += 20
 
         if obj.description.strip():
@@ -104,10 +100,7 @@ def build_1():
     max_weight = SearchV2.objects.all()[0].weight
     increment = max_weight / 6
     for grid in Grid.objects.all():
-        obj, created = SearchV2.objects.get_or_create(
-            item_type="grid",
-            slug=grid.slug,
-        )
+        obj, created = SearchV2.objects.get_or_create(item_type="grid", slug=grid.slug)
         obj.slug_no_prefix = remove_prefix(grid.slug)
         obj.clean_title = clean_title(remove_prefix(grid.slug))
         obj.title = grid.title

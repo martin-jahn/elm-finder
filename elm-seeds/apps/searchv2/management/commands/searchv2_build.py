@@ -1,11 +1,11 @@
 from sys import stdout
 from time import gmtime, strftime
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
-from apps.searchv2.builders import build_1
 from apps.core.utils import healthcheck
+from apps.searchv2.builders import build_1
 
 
 class Command(BaseCommand):
@@ -14,7 +14,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        print("Commencing search result building now %s " % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime()), file=stdout)
+        print(
+            "Commencing search result building now %s " % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime()), file=stdout
+        )
         build_1()
         print("Finished at %s" % strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime()), file=stdout)
         healthcheck(settings.SEARCHV2_HEALTHCHECK_URL)

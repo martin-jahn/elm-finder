@@ -2,7 +2,6 @@
 Elm seeds contributors
 ===========================
 
-
 * Martin Jahn
 
 

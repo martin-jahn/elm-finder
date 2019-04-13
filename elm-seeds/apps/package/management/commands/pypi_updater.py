@@ -1,11 +1,10 @@
-import logging
 import logging.config
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
-from apps.package.models import Package
 from apps.core.utils import healthcheck
+from apps.package.models import Package
 
 logger = logging.getLogger(__name__)
 

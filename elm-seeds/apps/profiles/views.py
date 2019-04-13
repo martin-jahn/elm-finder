@@ -1,16 +1,11 @@
-from django.contrib.auth.models import User
+from braces.views import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.auth.signals import user_logged_in
+from django.core.exceptions import MultipleObjectsReturned
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic.edit import UpdateView
-from django.core.exceptions import MultipleObjectsReturned
-from braces.views import LoginRequiredMixin
-
-from django.contrib.auth.signals import user_logged_in
-
-# from social_auth.signals import pre_update
-# from social_auth.backends.contrib.github import GithubBackend
 
 from apps.profiles.forms import ProfileForm
 from apps.profiles.models import Profile
@@ -23,10 +18,9 @@ def profile_detail(request, github_account, template_name="profiles/profile.html
     try:
         profile = get_object_or_404(Profile, github_account=github_account)
     except MultipleObjectsReturned:
-        profile = Profile.objects.filter(github_account=github_account).latest('pk')
+        profile = Profile.objects.filter(github_account=github_account).latest("pk")
 
-    return render(request, template_name,
-        {"local_profile": profile, "user": profile.user},)
+    return render(request, template_name, {"local_profile": profile, "user": profile.user})
 
 
 class ProfileEditUpdateView(LoginRequiredMixin, UpdateView):
@@ -44,19 +38,16 @@ class ProfileEditUpdateView(LoginRequiredMixin, UpdateView):
 
 
 def github_user_update(sender, **kwargs):
-    # import ipdb; ipdb.set_trace()
+
     try:
-        user = kwargs['request'].user
+        user = kwargs["request"].user
     except (KeyError, AttributeError):
-        user = kwargs.get('user')
+        user = kwargs.get("user")
     profile_instance, created = Profile.objects.get_or_create(user=user)
     profile_instance.github_account = user.username
     profile_instance.email = user.email
     profile_instance.save()
     return True
 
+
 user_logged_in.connect(github_user_update)
-
-
-from rest_framework.response import Response
-from rest_framework.views import APIView

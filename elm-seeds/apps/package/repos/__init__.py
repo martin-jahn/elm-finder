@@ -1,6 +1,6 @@
-from django.conf import settings
-
 import re
+
+from django.conf import settings
 
 from apps.package.repos.unsupported import repo_handler
 

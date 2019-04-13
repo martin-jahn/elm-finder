@@ -6,7 +6,6 @@ register = template.Library()
 
 
 class ParticipantURLNode(template.Node):
-
     def __init__(self, repo, participant):
         self.repo = template.Variable(repo)
         self.participant = template.Variable(participant)
@@ -17,7 +16,7 @@ class ParticipantURLNode(template.Node):
         if repo.user_url:
             user_url = repo.user_url % participant
         else:
-            user_url = '%s/%s' % (repo.url, participant)
+            user_url = "%s/%s" % (repo.url, participant)
         return user_url
 
 
@@ -35,15 +34,15 @@ def commits_over_52(package):
     return package.commits_over_52()
 
 
-@register.inclusion_tag('package/templatetags/_usage_button.html', takes_context=True)
+@register.inclusion_tag("package/templatetags/_usage_button.html", takes_context=True)
 def usage_button(context):
-    response = used_packages_list(context['request'])
-    response['STATIC_URL'] = context['STATIC_URL']
-    response['package'] = context['package']
-    if context['package'].pk in response['used_packages_list']:
-        response['usage_action'] = "remove"
-        response['image'] = "usage_triangle_filled"
+    response = used_packages_list(context["request"])
+    response["STATIC_URL"] = context["STATIC_URL"]
+    response["package"] = context["package"]
+    if context["package"].pk in response["used_packages_list"]:
+        response["usage_action"] = "remove"
+        response["image"] = "usage_triangle_filled"
     else:
-        response['usage_action'] = "add"
-        response['image'] = "usage_triangle_hollow"
+        response["usage_action"] = "add"
+        response["image"] = "usage_triangle_hollow"
     return response

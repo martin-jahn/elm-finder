@@ -1,16 +1,12 @@
-
 from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from apps.core.models import BaseModel
-from apps.package.models import Package
 from apps.grid.models import Grid
+from apps.package.models import Package
 
-ITEM_TYPE_CHOICES = (
-    ('package', 'Package'),
-    ('grid', 'Grid'),
-)
+ITEM_TYPE_CHOICES = (("package", "Package"), ("grid", "Grid"))
 
 
 class SearchV2(BaseModel):
@@ -42,14 +38,15 @@ class SearchV2(BaseModel):
     repo_forks = models.IntegerField(_("repo forks"), default=0)
     pypi_downloads = models.IntegerField(_("Pypi downloads"), default=0)
     usage = models.IntegerField(_("Number of users"), default=0)
-    participants = models.TextField(_("Participants"),
-                        help_text="List of collaborats/participants on the project", blank=True)
+    participants = models.TextField(
+        _("Participants"), help_text="List of collaborats/participants on the project", blank=True
+    )
     last_committed = models.DateTimeField(_("Last commit"), blank=True, null=True)
     last_released = models.DateTimeField(_("Last release"), blank=True, null=True)
 
     class Meta:
-        ordering = ['-weight', ]
-        verbose_name_plural = 'SearchV2s'
+        ordering = ["-weight"]
+        verbose_name_plural = "SearchV2s"
 
     def __str__(self):
         return "{0}:{1}".format(self.weight, self.title)
@@ -72,7 +69,7 @@ class SearchV2(BaseModel):
         return pypi_name
 
     def get_resource_uri(self):
-        return '/api/v4/{}/{}/'.format(self.item_type, 3)
+        return "/api/v4/{}/{}/".format(self.item_type, 3)
 
     def _self(self):
         return self
