@@ -160,7 +160,7 @@ LOGIN_REDIRECT_URLNAME = "home"
 EMAIL_CONFIRMATION_DAYS = 2
 EMAIL_DEBUG = DEBUG
 
-CACHE_TIMEOUT = 60 * 60
+CACHE_TIMEOUT = 5 * 60
 
 ROOT_URLCONF = "urls"
 
@@ -168,9 +168,9 @@ SECRET_KEY = "CHANGEME"
 
 URCHIN_ID = ""
 
-DEFAULT_FROM_EMAIL = "Django Packages <djangopackages-noreply@djangopackages.org>"
+DEFAULT_FROM_EMAIL = "Elm seeds <elmseeds-noreply@elmseeds.org>"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_SUBJECT_PREFIX = "[Django Packages] "
+EMAIL_SUBJECT_PREFIX = "[Elm seeds] "
 try:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "smtp.sendgrid.net"
@@ -184,9 +184,6 @@ except Exception as e:
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
 
-EMAIL_SUBJECT_PREFIX = "[Cartwheel Web]"
-
-DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 PACKAGINATOR_HELP_TEXT = {
     "REPO_URL": "Enter your project repo hosting URL here. Example: https://github.com/opencomparison/opencomparison",
@@ -208,8 +205,8 @@ LOCAL_INSTALLED_APPS = []
 SUPPORTED_REPO = []
 
 ########################## Site specific stuff
-FRAMEWORK_TITLE = "Django"
-SITE_TITLE = "Django Packages"
+FRAMEWORK_TITLE = "Elm"
+SITE_TITLE = "Elm seeds"
 
 if LOCAL_INSTALLED_APPS:
     INSTALLED_APPS.extend(LOCAL_INSTALLED_APPS)
@@ -241,15 +238,6 @@ DATABASES = {"default": env.db("DATABASE_URL")}
 
 WSGI_APPLICATION = "wsgi.application"
 
-if DEBUG:
-
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
-    INSTALLED_APPS += ("debug_toolbar",)
-
-    INTERNAL_IPS = ("127.0.0.1",)
-
-    DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False, "SHOW_TEMPLATE_CONTEXT": True}
-    x = 1
 
 ADMIN_URL_BASE = environ.get("ADMIN_URL_BASE", r"^admin/")
 
@@ -385,7 +373,3 @@ GITHUB_TOKEN = environ.get("GITHUB_TOKEN")
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
-
-
-SITE_TITLE = 'Elm seeds'
-FRAMEWORK_TITLE = 'Elm'
