@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% load cache %}
 {% load i18n %}
 
-{% block head_title %}Reusable apps, sites and tools directory{% endblock %}
+{% block head_title %}Reusable libraries and tools directory{% endblock %}
 
 {% block body_class %}home{% endblock %}
 {% block pre_body %}
@@ -11,7 +10,7 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1">
-                <h1>{{ SITE_TITLE }} is a directory of reusable apps, sites, tools, and more for your {{ FRAMEWORK_TITLE }}
+                <h1>{{ SITE_TITLE }} is a directory of reusable libraries and tools for your {{ FRAMEWORK_TITLE }}
             projects.</h1>
         <p><a class="btn btn-primary btn-lg" href="{% url 'add_package' %}" role="button">{% trans "Add Package" %}</a>
             <a class="btn btn-primary btn-lg" href="{% url 'add_grid' %}" role="button">{% trans "Add Grid" %}</a></p>

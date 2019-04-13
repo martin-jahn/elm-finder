@@ -25,7 +25,7 @@ class PackageForm(ModelForm):
 
     class Meta:
         model = Package
-        fields = ["repo_url", "title", "slug", "pypi_url", "category"]
+        fields = ["repo_url", "title", "slug", "category"]
 
 
 class PackageExampleForm(ModelForm):

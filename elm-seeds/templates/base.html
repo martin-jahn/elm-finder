@@ -121,7 +121,7 @@
                   <th>{% trans "Search Weight" %}</th>
                   <th>{% trans "Package" %}</th>
                   <th>{% trans "Description" %}</th>
-                  <th>{% trans "Last PyPI release:" %}</th>
+{#                  <th>{% trans "Last PyPI release:" %}</th>#}
                   <th>{% trans "Repo Forks" %}</th>
                   <th>{% trans "Stars" %}</th>
                 </tr>
@@ -165,7 +165,7 @@
     <div class="row">
         <div class="col-sm-12 text-center">
 
-            Projects listed on Djangopackages are third-party packages. They are not vetted nor endorsed by the Django Software Foundation. Use them at your own risk
+            Projects listed on Elm seeds are third-party packages. They are not vetted nor endorsed by the author or contributors of this project. Use them at your own risk
 
         </div>
 
@@ -175,15 +175,15 @@
     <div class="row">
         <div class="col-sm-12 text-center">
 
-            <a href="https://github.com/djangopackages/djangopackages">Repo</a>
+            <a href="https://github.com/martin-jahn/elm-seeds">Repo</a>
 
-            <a href="{% url 'faq' %}">{% trans "FAQ" %}</a>
+{#            <a href="{% url 'faq' %}">{% trans "FAQ" %}</a>#}
 
             <a href="{% url 'terms' %}">{% trans "Terms" %}</a>
 
-            <a href="http://djangopackagesorg.readthedocs.io/en/latest/contributing.html">{% trans "Contribute" %}</a>
+{#            <a href="http://djangopackagesorg.readthedocs.io/en/latest/contributing.html">{% trans "Contribute" %}</a>#}
 
-            <a href="http://djangopackagesorg.readthedocs.io/en/latest/apiv3_docs.html">{% trans "API" %}</a>
+{#            <a href="http://djangopackagesorg.readthedocs.io/en/latest/apiv3_docs.html">{% trans "API" %}</a>#}
 
             <a href="{% url 'syndication' %}">{% trans "RSS / Atom" %}</a>
 
@@ -196,9 +196,9 @@
   <div class="container">
       <div class="row">
           <div class="col-12">
-              &copy; 2010-{% now "Y" %} <a href="https://github.com/djangopackages/djangopackages/blob/master/CONTRIBUTORS.txt">Contributors</a>, funded by the <a href="https://www.djangoproject.com/foundation/">DSF</a>. <br/>
-              Originally developed by <a href="http://pydanny.com">Daniel Roy-Greenfeld</a> & <a href="https://www.audreyr.com/">Audrey Roy-Greenfeld</a>, currently maintained by <a href="https://github.com/jayfk">Jannis Gebauer</a>.<br/>
-              Uses data from <a href="https://libraries.io">libraries.io</a> & <a href="https://pyup.io/">pyup.io</a>.
+              &copy; 2010-{% now "Y" %} <a href="https://github.com/martin-jahn/elm-seeds/blob/master/CONTRIBUTORS.txt">Contributors</a>, funded by the <a href="https://www.djangoproject.com/foundation/">DSF</a>. <br/>
+              Currently maintained by Martin Jahn. Originally developed by <a href="http://pydanny.com">Daniel Roy-Greenfeld</a> & <a href="https://www.audreyr.com/">Audrey Roy-Greenfeld</a>, <a href="https://github.com/jayfk">Jannis Gebauer</a>.<br/>
+              Uses data from <a href="https://libraries.io">libraries.io</a>.
 
           </div>
       </div>

@@ -193,7 +193,7 @@ PACKAGINATOR_HELP_TEXT = {
     "PYPI_URL": "<strong>Leave this blank if this package does not have a PyPI release.</strong> What PyPI uses to index your package. Example: django-uni-form",
 }
 
-PACKAGINATOR_SEARCH_PREFIX = "django"
+PACKAGINATOR_SEARCH_PREFIX = "Elm"
 
 # if set to False any auth user can add/modify packages
 # only django admins can delete
@@ -385,3 +385,7 @@ GITHUB_TOKEN = environ.get("GITHUB_TOKEN")
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
+
+
+SITE_TITLE = 'Elm seeds'
+FRAMEWORK_TITLE = 'Elm'
