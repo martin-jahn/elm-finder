@@ -1,3 +1,6 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *
 
 ALLOWED_HOSTS = ["www.elmseeds.org"]
@@ -15,11 +18,7 @@ RESTRICT_GRID_EDITORS = True
 
 ### Sentry settings
 
-INSTALLED_APPS += ("raven.contrib.django.raven_compat",)
-RAVEN_MIDDLEWARE = ["raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware"]
-MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
-SENTRY_DSN = env("DJANGO_SENTRY_DSN")
-SENTRY_CLIENT = env("DJANGO_SENTRY_CLIENT", default="raven.contrib.django.raven_compat.DjangoClient")
+sentry_sdk.init(dsn=environ.get("SENTRY_DSN"), integrations=[DjangoIntegration()])
 
 ### End Sentry
 

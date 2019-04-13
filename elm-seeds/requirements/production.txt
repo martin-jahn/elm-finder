@@ -2,3 +2,4 @@
 
 
 uwsgi==2.0.17.1
+sentry-sdk
