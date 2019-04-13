@@ -1,16 +1,20 @@
-====
-Team
-====
+===========================
+Elm seeds contributors
+===========================
 
-Project Leads
-=============
 
-* Jannis Gebauer (@jayfk)
-* Nikita Shupeyko (@webyneter)
+* Martin Jahn
+
+
+=========================
+Djangopackages developers
+=========================
 
 Former Project Leads
 ====================
 
+* Jannis Gebauer (@jayfk)
+* Nikita Shupeyko (@webyneter)
 * Audrey Roy Greenfeld <aroy@alum.mit.edu> (@audreyr)
 * Daniel Roy Greenfeld <pydanny@gmail.com> (@pydanny)
 
