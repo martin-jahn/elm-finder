@@ -1,13 +1,15 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import CASCADE
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from apps.core.models import BaseModel
 
 
 class Profile(BaseModel):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=CASCADE)
 
     # Note to coders: The '_url' fields below need to JUST be the name of the account.
     #     Examples:
@@ -64,9 +66,8 @@ class Profile(BaseModel):
         packages.sort(key=lambda a: a.title)
         return packages
 
-    @models.permalink
     def get_absolute_url(self):
-        return ("profile_detail", [self.github_account])
+        return reverse("profile_detail", kwargs={"github_account": self.github_account})
 
     # define permission properties as properties so we can access in templates
 

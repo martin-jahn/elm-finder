@@ -8,6 +8,8 @@ ALLOWED_HOSTS = ["www.elmseeds.org"]
 
 DEBUG = False
 
+TEMPLATES[0]["OPTIONS"]["DEBUG"] = DEBUG
+
 # serve media through the staticfiles app.
 SERVE_MEDIA = DEBUG
 

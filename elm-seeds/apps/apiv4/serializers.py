@@ -1,6 +1,6 @@
 import six
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import NoReverseMatch
+from django.urls import NoReverseMatch
 from rest_framework import relations, serializers
 from rest_framework.reverse import reverse
 

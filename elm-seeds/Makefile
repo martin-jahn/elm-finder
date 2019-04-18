@@ -16,7 +16,7 @@ add:
 
 
 format_code:
-	black -t py36 -l $(line_width) .
-
 	# fixes imports broken by black
 	isort -e -j 4 -rc -w $(line_width) .
+
+	black -t py36 -l $(line_width) .

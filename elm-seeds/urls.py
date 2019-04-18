@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import logout as contrib_logout_view
+from django.contrib.auth.views import LoginView
 from django.views.generic.base import TemplateView
 
 from apps.apiv4.viewsets import router
@@ -21,7 +21,7 @@ urlpatterns = [
     url(r"^health_check/$", health_check_view, name="health_check"),
     url(r"^404$", error_404_view, name="404"),
     url(r"^500$", error_500_view, name="500"),
-    url(settings.ADMIN_URL_BASE, include(admin.site.urls)),
+    url(settings.ADMIN_URL_BASE, admin.site.urls),
     url(r"^profiles/", include("apps.profiles.urls")),
     url(r"^packages/", include("apps.package.urls")),
     url(r"^grids/", include("apps.grid.urls")),
@@ -30,7 +30,7 @@ urlpatterns = [
     url(r"^categories/$", homepage, name="categories"),
     url(r"^python3/$", python3_list, name="py3_compat"),
     # url(regex=r'^login/$', view=TemplateView.as_view(template_name='pages/login.html'), name='login',),
-    url(r"^logout/$", contrib_logout_view, {"next_page": "/"}, "logout"),
+    url(r"^logout/$", LoginView.as_view(), name="logout", kwargs={"next_page": "/"}),
     # static pages
     url(r"^about/$", TemplateView.as_view(template_name="pages/faq.html"), name="about"),
     url(r"^terms/$", TemplateView.as_view(template_name="pages/terms.html"), name="terms"),
@@ -43,9 +43,9 @@ urlpatterns = [
     # apiv2
     # url(r'^api/v2/', include('core.apiv2', namespace="apiv2")),
     # apiv3
-    url(r"^api/v3/", include("apps.apiv3.urls", namespace="apiv3")),
+    url(r"^api/v3/", include("apps.apiv3.urls")),
     # apiv4
-    url(r"^api/v4/", include(router.urls, namespace="apiv4")),
+    url(r"^api/v4/", include((router.urls, "apiv4"))),
     url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     url(regex=r"^api/v1/.*$", view=apiv1_gone, name="apiv1_gone"),
     # url(r'^api/v1/', include('core.apiv1', namespace="apitest")),

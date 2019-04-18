@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from apps.package.models import Category, Package, PackageExample
 from apps.package.tests import initial_data

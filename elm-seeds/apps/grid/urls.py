@@ -14,7 +14,7 @@ from apps.grid.views import (
     edit_feature,
     edit_grid,
     grid_detail,
-    grids
+    grids,
 )
 
 urlpatterns = [

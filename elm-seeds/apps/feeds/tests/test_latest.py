@@ -1,6 +1,6 @@
 import feedparser
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from apps.feeds.tests import data
 from apps.package.models import Package

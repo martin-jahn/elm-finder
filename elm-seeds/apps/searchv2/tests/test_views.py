@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from apps.package.tests import initial_data
 from apps.profiles.models import Profile

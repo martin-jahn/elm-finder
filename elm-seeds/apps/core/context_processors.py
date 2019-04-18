@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models import Max
+from django.urls import reverse
 
 from apps.searchv2.models import SearchV2
 

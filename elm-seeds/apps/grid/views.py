@@ -2,10 +2,10 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.grid.forms import ElementForm, FeatureForm, GridForm, GridPackageForm

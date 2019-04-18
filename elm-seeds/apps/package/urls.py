@@ -16,7 +16,7 @@ from apps.package.views import (
     package_list,
     post_data,
     update_package,
-    usage
+    usage,
 )
 
 urlpatterns = [

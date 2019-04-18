@@ -3,6 +3,7 @@
 
 import django.utils.timezone
 from django.db import migrations, models
+from django.db.models import CASCADE
 
 import apps.core.fields
 
@@ -120,8 +121,8 @@ class Migration(migrations.Migration):
                         default=django.utils.timezone.now, verbose_name="modified", editable=False, blank=True
                     ),
                 ),
-                ("grid", models.ForeignKey(to="grid.Grid")),
-                ("package", models.ForeignKey(to="package.Package")),
+                ("grid", models.ForeignKey(to="grid.Grid", on_delete=CASCADE)),
+                ("package", models.ForeignKey(to="package.Package", on_delete=CASCADE)),
             ],
             options={"verbose_name": "Grid Package", "verbose_name_plural": "Grid Packages"},
             bases=(models.Model,),
@@ -133,15 +134,21 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name="feature", name="grid", field=models.ForeignKey(to="grid.Grid"), preserve_default=True
+            model_name="feature",
+            name="grid",
+            field=models.ForeignKey(to="grid.Grid", on_delete=CASCADE),
+            preserve_default=True,
         ),
         migrations.AddField(
-            model_name="element", name="feature", field=models.ForeignKey(to="grid.Feature"), preserve_default=True
+            model_name="element",
+            name="feature",
+            field=models.ForeignKey(to="grid.Feature", on_delete=CASCADE),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name="element",
             name="grid_package",
-            field=models.ForeignKey(to="grid.GridPackage"),
+            field=models.ForeignKey(to="grid.GridPackage", on_delete=CASCADE),
             preserve_default=True,
         ),
     ]

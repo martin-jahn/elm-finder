@@ -1,10 +1,10 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.homepage.views import homepage

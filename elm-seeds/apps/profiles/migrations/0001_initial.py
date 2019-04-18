@@ -4,6 +4,7 @@
 import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
+from django.db.models import CASCADE
 
 import apps.core.fields
 
@@ -48,7 +49,7 @@ class Migration(migrations.Migration):
                     models.CharField(max_length=100, null=True, verbose_name="Google Code account", blank=True),
                 ),
                 ("email", models.EmailField(max_length=75, null=True, verbose_name="Email", blank=True)),
-                ("user", models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+                ("user", models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=CASCADE)),
             ],
             options={"abstract": False},
             bases=(models.Model,),

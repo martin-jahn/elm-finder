@@ -5,6 +5,7 @@ import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
+from django.db.models import CASCADE
 
 import apps.core.fields
 
@@ -132,7 +133,7 @@ class Migration(migrations.Migration):
                     models.URLField(default="", null=True, verbose_name="Documentation URL", blank=True),
                 ),
                 ("commit_list", models.TextField(verbose_name="Commit List", blank=True)),
-                ("category", models.ForeignKey(verbose_name="Installation", to="package.Category")),
+                ("category", models.ForeignKey(verbose_name="Installation", to="package.Category", on_delete=CASCADE)),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -184,7 +185,7 @@ class Migration(migrations.Migration):
                         verbose_name="Active",
                     ),
                 ),
-                ("package", models.ForeignKey(to="package.Package")),
+                ("package", models.ForeignKey(to="package.Package", on_delete=CASCADE)),
             ],
             options={"ordering": ["title"]},
             bases=(models.Model,),
@@ -233,12 +234,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("supports_python3", models.BooleanField(default=False, verbose_name="Supports Python 3")),
-                ("package", models.ForeignKey(blank=True, to="package.Package", null=True)),
+                ("package", models.ForeignKey(blank=True, to="package.Package", null=True, on_delete=CASCADE)),
             ],
             options={"ordering": ["-upload_time"], "get_latest_by": "upload_time"},
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name="commit", name="package", field=models.ForeignKey(to="package.Package"), preserve_default=True
+            model_name="commit",
+            name="package",
+            field=models.ForeignKey(to="package.Package", on_delete=CASCADE),
+            preserve_default=True,
         ),
     ]

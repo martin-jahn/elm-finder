@@ -2,9 +2,9 @@ from braces.views import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import MultipleObjectsReturned
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views.generic.edit import UpdateView
 
 from apps.profiles.forms import ProfileForm

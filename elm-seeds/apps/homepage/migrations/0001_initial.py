@@ -3,6 +3,7 @@
 
 import django.utils.timezone
 from django.db import migrations, models
+from django.db.models import CASCADE
 
 import apps.core.fields
 
@@ -30,7 +31,7 @@ class Migration(migrations.Migration):
                 ),
                 ("start_date", models.DateField(verbose_name="Start Date")),
                 ("end_date", models.DateField(verbose_name="End Date")),
-                ("package", models.ForeignKey(to="package.Package")),
+                ("package", models.ForeignKey(to="package.Package", on_delete=CASCADE)),
             ],
             options={
                 "ordering": ("-start_date", "-end_date"),
@@ -58,7 +59,7 @@ class Migration(migrations.Migration):
                 ),
                 ("start_date", models.DateField(verbose_name="Start Date")),
                 ("end_date", models.DateField(verbose_name="End Date")),
-                ("grid", models.ForeignKey(to="grid.Grid")),
+                ("grid", models.ForeignKey(to="grid.Grid", on_delete=CASCADE)),
             ],
             options={
                 "ordering": ("-start_date", "-end_date"),
