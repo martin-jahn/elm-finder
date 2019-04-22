@@ -81,6 +81,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         "DIRS": [os.path.join(PROJECT_ROOT, "templates")],
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -99,7 +100,7 @@ TEMPLATES = [
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
                 "apps.core.context_processors.core_values",
-            ],
+            ]
         },
     }
 ]
@@ -363,7 +364,7 @@ GITHUB_API_SECRET = environ.get("GITHUB_API_SECRET")
 GITHUB_APP_ID = environ.get("GITHUB_APP_ID")
 GITHUB_TOKEN = environ.get("GITHUB_TOKEN")
 
-########### SEKURITY
+########### SECURITY
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}

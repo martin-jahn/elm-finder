@@ -39,6 +39,4 @@ whitenoise==4.1.2
 # Redis support
 django-redis==4.10.0
 redis==3.2.1
-opbeat==3.6.1
-raven==6.10.0
 django-anymail==6.0
