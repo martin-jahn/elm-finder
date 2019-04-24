@@ -3,7 +3,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
 
-DOMAIN = "www.elmseeds.org"
+DOMAIN = "www.elmfinder.org"
 ALLOWED_HOSTS = [DOMAIN]
 CSRF_COOKIE_DOMAIN = DOMAIN
 SESSION_COOKIE_DOMAINS = DOMAIN

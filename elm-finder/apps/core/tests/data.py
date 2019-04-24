@@ -45,7 +45,7 @@ def make():
         category=category,
         participants="pydanny",
         repo_description="Yet another test package, with no grid affiliation.",
-        repo_url="https://github.com/martin-jahn/elm-seeds",
+        repo_url="https://github.com/martin-jahn/elm-finder",
         slug="another-test",
         title="Another Test",
     )

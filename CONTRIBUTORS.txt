@@ -1,5 +1,5 @@
 ===========================
-Elm seeds contributors
+Elm finder contributors
 ===========================
 
 * Martin Jahn

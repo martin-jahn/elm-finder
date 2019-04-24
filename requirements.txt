@@ -1,1 +1,1 @@
--r elm-seeds/requirements/development.txt
+-r elm-finder/requirements/development.txt

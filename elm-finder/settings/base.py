@@ -163,9 +163,9 @@ SECRET_KEY = "CHANGEME"
 
 URCHIN_ID = ""
 
-DEFAULT_FROM_EMAIL = "Elm seeds <elmseeds-noreply@elmseeds.org>"
+DEFAULT_FROM_EMAIL = "Elm finder <elmfinder-noreply@elmfinder.org>"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_SUBJECT_PREFIX = "[Elm seeds] "
+EMAIL_SUBJECT_PREFIX = "[Elm finder] "
 try:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "smtp.sendgrid.net"
@@ -181,7 +181,7 @@ except Exception as e:
 
 
 PACKAGINATOR_HELP_TEXT = {
-    "REPO_URL": "Enter your project repo hosting URL here. Example: https://github.com/martin-jahn/elm-seeds",
+    "REPO_URL": "Enter your project repo hosting URL here. Example: https://github.com/martin-jahn/elm-finder",
     "PYPI_URL": "<strong>Leave this blank if this package does not have a PyPI release.</strong> What PyPI uses to index your package. Example: django-uni-form",
 }
 
@@ -201,7 +201,7 @@ SUPPORTED_REPO = []
 
 ########################## Site specific stuff
 FRAMEWORK_TITLE = "Elm"
-SITE_TITLE = "Elm seeds"
+SITE_TITLE = "Elm finder"
 
 if LOCAL_INSTALLED_APPS:
     INSTALLED_APPS.extend(LOCAL_INSTALLED_APPS)

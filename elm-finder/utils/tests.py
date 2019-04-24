@@ -56,7 +56,7 @@ def load():
         pypi_url="",
         participants="pydanny",
         pypi_downloads=0,
-        repo_url="https://github.com/martin-jahn/elm-seeds",
+        repo_url="https://github.com/martin-jahn/elm-finder",
         repo_forks=0,
         slug="another-test",
         repo_description="Yet another test package, with no grid affiliation.",
