@@ -60,6 +60,8 @@ STATIC_URL = "/static/"
 # Additional directories which hold static files
 STATICFILES_DIRS = [os.path.join(PROJECT_ROOT, "static")]
 
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.CachedStaticFilesStorage"
+
 # Use the default admin media prefix, which is...
 # ADMIN_MEDIA_PREFIX = "/static/admin/"
 

@@ -6,6 +6,7 @@ from django.db.models import Count
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views.generic import TemplateView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.grid.forms import ElementForm, FeatureForm, GridForm, GridPackageForm
@@ -33,7 +34,7 @@ def grids(request, template_name="grid/grids.html"):
     """
     # annotations providing bad counts
     grids = Grid.objects.filter()
-    grids = grids.prefetch_related("feature_set")
+    grids = grids.prefetch_related("features")
     grids = grids.annotate(gridpackage_count=Count("gridpackage"))
     return render(request, template_name, {"grids": grids})
 
@@ -49,7 +50,7 @@ def grid_detail_landscape(request, slug, template_name="grid/grid_detail2.html")
     * ``grid_packages`` - packages involved in the current grid
     """
     grid = get_object_or_404(Grid, slug=slug)
-    features = grid.feature_set.all()
+    features = grid.features.all()
 
     grid_packages = grid.grid_packages.order_by("package__commit_list")
 
@@ -296,62 +297,65 @@ def add_new_grid_package(request, grid_slug, template_name="package/package_form
     return render(request, template_name, {"form": form, "repo_data": repo_data_for_js(), "action": "add"})
 
 
-def ajax_grid_list(request, template_name="grid/ajax_grid_list.html"):
-    q = request.GET.get("q", "")
-    grids = []
-    if q:
-        grids = Grid.objects.filter(title__istartswith=q)
-        package_id = request.GET.get("package_id", "")
-        if package_id:
-            grids = grids.exclude(gridpackage__package__id=package_id)
-    return render(request, template_name, {"grids": grids})
+class AjaxGridListView(TemplateView):
+    template_name = "grid/ajax_grid_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = self.request.GET.get("q", "")
+        grids = []
+        if q:
+            grids = Grid.objects.filter(title__istartswith=q)
+            package_id = self.request.GET.get("package_id", "")
+            if package_id:
+                grids = grids.exclude(gridpackage__package__id=package_id)
+
+        context["grids"] = grids
+        return context
 
 
-def grid_detail(request, slug, template_name="grid/grid_detail.html"):
-    """displays a grid in detail
+class GridDetailView(TemplateView):
+    template_name = "grid/grid_detail.html"
 
-    Template context:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    * ``grid`` - the grid object
-    * ``elements`` - elements of the grid
-    * ``features`` - feature set used in the grid
-    * ``grid_packages`` - packages involved in the current grid
-    """
-    grid = get_object_or_404(Grid, slug=slug)
-    features = grid.feature_set.select_related(None)
+        grid = get_object_or_404(Grid, slug=kwargs["slug"])
+        features = grid.features.select_related(None)
 
-    grid_packages = grid.grid_packages.order_by("-package__repo_watchers")
+        grid_packages = grid.grid_packages.order_by("-package__repo_watchers")
 
-    elements = Element.objects.filter(feature__in=features, grid_package__in=grid_packages)
+        elements = Element.objects.filter(feature__in=features, grid_package__in=grid_packages)
 
-    element_map = build_element_map(elements)
+        element_map = build_element_map(elements)
 
-    # These attributes are how we determine what is displayed in the grid
-    default_attributes = [
-        ("repo_description", "Description"),
-        ("category", "Category"),
-        ("pypi_downloads", "Downloads"),
-        ("last_updated", "Last Updated"),
-        ("pypi_version", "Version"),
-        ("repo", "Repo"),
-        ("commits_over_52", "Commits"),
-        ("repo_watchers", "Stars"),
-        ("repo_forks", "Forks"),
-        ("participant_list", "Participants"),
-        ("license_latest", "License"),
-    ]
+        # These attributes are how we determine what is displayed in the grid
+        default_attributes = [
+            ("repo_description", "Description"),
+            ("category", "Category"),
+            ("pypi_downloads", "Downloads"),
+            ("last_updated", "Last Updated"),
+            ("pypi_version", "Version"),
+            ("repo", "Repo"),
+            ("commits_over_52", "Commits"),
+            ("repo_watchers", "Stars"),
+            ("repo_forks", "Forks"),
+            ("participant_list", "Participants"),
+            ("license_latest", "License"),
+        ]
 
-    return render(
-        request,
-        template_name,
-        {
-            "grid": grid,
-            "features": features,
-            "grid_packages": grid_packages,
-            "attributes": default_attributes,
-            "elements": element_map,
-        },
-    )
+        context.update(
+            {
+                "grid": grid,
+                "features": features,
+                "grid_packages": grid_packages,
+                "attributes": default_attributes,
+                "elements": element_map,
+            }
+        )
+
+        return context
 
 
 class GridListAPIView(ListAPIView):
@@ -363,8 +367,14 @@ class GridDetailAPIView(RetrieveAPIView):
     model = Grid
 
 
-def grid_timesheet(request, slug, template_name="grid/grid_timesheet.html"):
-    grid = get_object_or_404(Grid, slug=slug)
-    grid_packages = grid.grid_packages.order_by("-package__modified").select_related()
+class GridTimesheetView(TemplateView):
+    template_name = "grid/grid_timesheet.html"
 
-    return render(request, template_name, {"grid": grid, "grid_packages": grid_packages})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        grid = get_object_or_404(Grid, slug=kwargs["slug"])
+        grid_packages = grid.grid_packages.order_by("-package__modified").select_related()
+        context.update({"grid": grid, "grid_packages": grid_packages})
+
+        return context

@@ -33,7 +33,7 @@ class Grid(BaseModel):
 
     def elements(self):
         elements = []
-        for feature in self.feature_set.all():
+        for feature in self.features.all():
             for element in feature.element_set.all():
                 elements.append(element)
         return elements
@@ -104,7 +104,7 @@ class Feature(BaseModel):
     * :attr:`description` - plain-text description
     """
 
-    grid = models.ForeignKey(Grid, on_delete=CASCADE)
+    grid = models.ForeignKey(Grid, on_delete=CASCADE, related_name="features")
     title = models.CharField(_("Title"), max_length=100)
     description = models.TextField(_("Description"), blank=True)
 
