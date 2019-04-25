@@ -1,3 +1,4 @@
+from functools import lru_cache
 from random import sample
 
 import feedparser
@@ -6,7 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from apps.core.decorators import lru_cache
 from apps.grid.models import Grid
 from apps.homepage.models import PSA, Dpotw, Gotw
 from apps.package.models import Category, Package, Version
