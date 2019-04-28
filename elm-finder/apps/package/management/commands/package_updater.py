@@ -5,6 +5,7 @@ from time import sleep
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from github3 import login as github_login
+from tqdm import tqdm
 
 from apps.core.utils import healthcheck
 from apps.package.models import Package
@@ -27,7 +28,7 @@ class Command(BaseCommand):
 
         github = github_login(token=settings.GITHUB_TOKEN)
 
-        for index, package in enumerate(Package.objects.iterator()):
+        for index, package in enumerate(tqdm(Package.objects.iterator(), total=Package.objects.all().count())):
 
             # Simple attempt to deal with Github rate limiting
             while True:
