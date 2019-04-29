@@ -2,11 +2,12 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Count
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.grid.forms import ElementForm, FeatureForm, GridForm, GridPackageForm
@@ -85,28 +86,22 @@ def grid_detail_landscape(request, slug, template_name="grid/grid_detail2.html")
         },
     )
 
+class AddGridView(FormView):
+    template_name = "grid/update_grid.html"
+    form_class = GridForm
 
-@login_required
-def add_grid(request, template_name="grid/update_grid.html"):
-    """Creates a new grid, requires user to be logged in.
-    Works for both GET and POST request methods
+    def get_page_title(self, context):
+        return f'Grid / Add'
 
-    Template context:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.profile.can_add_grid:
+            return HttpResponseForbidden("permission denied")
+        return super().dispatch(request, *args, **kwargs)
 
-    * ``form`` - an instance of :class:`~app.grid.forms.GridForm`
-    """
-
-    if not request.user.profile.can_add_grid:
-        return HttpResponseForbidden("permission denied")
-
-    new_grid = Grid()
-    form = GridForm(request.POST or None, instance=new_grid)
-
-    if form.is_valid():
+    @transaction.atomic
+    def form_valid(self, form):
         new_grid = form.save()
-        return HttpResponseRedirect(reverse("grid", kwargs={"slug": new_grid.slug}))
-
-    return render(request, template_name, {"form": form})
+        return redirect("grid", slug=new_grid.slug)
 
 
 @login_required
@@ -318,6 +313,9 @@ class AjaxGridListView(TemplateView):
 class GridDetailView(TemplateView):
     template_name = "grid/grid_detail.html"
 
+    def get_page_title(self, context):
+        return f'Grid / {context["grid"].name}'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -369,6 +367,9 @@ class GridDetailAPIView(RetrieveAPIView):
 
 class GridTimesheetView(TemplateView):
     template_name = "grid/grid_timesheet.html"
+
+    def get_page_title(self, context):
+        return f'Grid / {context["grid"].name} / Timesheet'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

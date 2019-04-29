@@ -5,6 +5,7 @@ pytz
 
 chardet==3.0.4
 coverage==4.3.4
+celery==4.3.0
 Django>=2.2,<2.3
 django-braces==1.13.0
 django-crispy-forms==1.7.2

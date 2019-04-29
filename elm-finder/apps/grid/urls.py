@@ -1,10 +1,11 @@
 """grid url patterns"""
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from apps.grid import views
 
 urlpatterns = [
-    url(r"^add/$", view=views.add_grid, name="add_grid"),
+    url(r"^add/$", view=login_required(views.AddGridView.as_view()), name="add_grid"),
     url(r"^(?P<slug>[-\w]+)/edit/$", view=views.edit_grid, name="edit_grid"),
     url(r"^element/(?P<feature_id>\d+)/(?P<package_id>\d+)/$", view=views.edit_element, name="edit_element"),
     url(r"^feature/add/(?P<grid_slug>[a-z0-9\-_]+)/$", view=views.add_feature, name="add_feature"),
