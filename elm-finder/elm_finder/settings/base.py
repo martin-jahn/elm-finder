@@ -28,7 +28,7 @@ MANAGERS = ADMINS
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -118,6 +118,7 @@ PROJECT_APPS = [
     "apps.feeds",
     "apps.searchv2",
     "apps.apiv3",
+    "utils.matomo",
 ]
 
 PREREQ_APPS = [
@@ -372,8 +373,13 @@ ALLOWED_HOSTS = ["*"]
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/4'
+CELERY_BROKER_URL = "redis://localhost:6379/4"
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_IGNORE_RESULT = True
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_ACCEPT_CONTENT = ['json']
+CELERY_ACCEPT_CONTENT = ["json"]
+
+
+MATOMO_TOKEN = environ.get("MATOMO_TOKEN")
+MATOMO_URL = environ.get("MATOMO_URL")
+MATOMO_SITE_ID = environ.get("MATOMO_SITE_ID")

@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.db.models import Count
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.generic import TemplateView, FormView
+from django.views.generic import FormView, TemplateView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.forms import ElementForm, FeatureForm, GridForm, GridPackageForm
 from apps.grid.models import Element, Feature, Grid, GridPackage
@@ -86,12 +87,13 @@ def grid_detail_landscape(request, slug, template_name="grid/grid_detail2.html")
         },
     )
 
+
 class AddGridView(FormView):
     template_name = "grid/update_grid.html"
     form_class = GridForm
 
     def get_page_title(self, context):
-        return f'Grid / Add'
+        return f"Grid / Add"
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.profile.can_add_grid:
@@ -310,11 +312,11 @@ class AjaxGridListView(TemplateView):
         return context
 
 
-class GridDetailView(TemplateView):
+class GridDetailView(MatomoTrackMixin, TemplateView):
     template_name = "grid/grid_detail.html"
 
     def get_page_title(self, context):
-        return f'Grid / {context["grid"].name}'
+        return f'Grid / {context["grid"].title}'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -365,11 +367,11 @@ class GridDetailAPIView(RetrieveAPIView):
     model = Grid
 
 
-class GridTimesheetView(TemplateView):
+class GridTimesheetView(MatomoTrackMixin, TemplateView):
     template_name = "grid/grid_timesheet.html"
 
     def get_page_title(self, context):
-        return f'Grid / {context["grid"].name} / Timesheet'
+        return f'Grid / {context["grid"].title} / Timesheet'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

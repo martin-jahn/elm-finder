@@ -13,6 +13,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
+from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.models import Grid
 from apps.homepage.models import Dpotw, Gotw
@@ -162,12 +164,24 @@ def package_autocomplete(request):
     return response
 
 
-def category(request, slug, template_name="package/category.html"):
-    category = get_object_or_404(Category, slug=slug)
-    packages = (
-        category.package_set.select_related().annotate(usage_count=Count("usage")).order_by("-repo_watchers", "title")
-    )
-    return render(request, template_name, {"category": category, "packages": packages})
+class CategoryView(MatomoTrackMixin, TemplateView):
+    template_name = "package/category.html"
+
+    def get_page_title(self, context):
+        return f'Category / {context["category"].title_plural}'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        category = get_object_or_404(Category, slug=kwargs["slug"])
+        packages = (
+            category.package_set.select_related()
+            .annotate(usage_count=Count("usage"))
+            .order_by("-repo_watchers", "title")
+        )
+
+        context.update({"category": category, "packages": packages})
+        return context
 
 
 def ajax_package_list(request, template_name="package/ajax_package_list.html"):
@@ -278,64 +292,75 @@ def python3_list(request, template_name="package/python3_list.html"):
     return render(request, template_name, {"packages": packages})
 
 
-def package_list(request, template_name="package/package_list.html"):
+class PackageListView(MatomoTrackMixin, TemplateView):
+    template_name = "package/package_list.html"
 
-    categories = []
-    for category in Category.objects.annotate(package_count=Count("package")):
-        element = {
-            "title": category.title,
-            "description": category.description,
-            "count": category.package_count,
-            "slug": category.slug,
-            "title_plural": category.title_plural,
-            "show_pypi": category.show_pypi,
-            "packages": category.package_set.annotate(usage_count=Count("usage")).order_by(
-                "-pypi_downloads", "-repo_watchers", "title"
-            )[:9],
-        }
-        categories.append(element)
+    def get_page_title(self, context):
+        return "Package"
 
-    return render(
-        request,
-        template_name,
-        {"categories": categories, "dpotw": Dpotw.objects.get_current(), "gotw": Gotw.objects.get_current()},
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        categories = []
+        for category in Category.objects.annotate(package_count=Count("package")):
+            element = {
+                "title": category.title,
+                "description": category.description,
+                "count": category.package_count,
+                "slug": category.slug,
+                "title_plural": category.title_plural,
+                "show_pypi": category.show_pypi,
+                "packages": category.package_set.annotate(usage_count=Count("usage")).order_by(
+                    "-pypi_downloads", "-repo_watchers", "title"
+                )[:9],
+            }
+            categories.append(element)
+        context.update(
+            {"categories": categories, "dpotw": Dpotw.objects.get_current(), "gotw": Gotw.objects.get_current()}
+        )
+        return context
 
 
-def package_detail(request, slug, template_name="package/package.html"):
+class PackageDetailView(MatomoTrackMixin, TemplateView):
+    template_name = "package/package.html"
 
-    package = get_object_or_404(Package, slug=slug)
-    no_development = package.no_development
-    try:
-        if package.category == Category.objects.get(slug="projects"):
-            # projects get a bye because they are a website
+    def get_page_title(self, context):
+        return f'Package / {context["package"].title}'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        package = get_object_or_404(Package, slug=kwargs["slug"])
+        no_development = package.no_development
+        try:
+            if package.category == Category.objects.get(slug="projects"):
+                # projects get a bye because they are a website
+                pypi_ancient = False
+                pypi_no_release = False
+            else:
+                pypi_ancient = package.pypi_ancient
+                pypi_no_release = package.pypi_ancient is None
+            warnings = no_development or pypi_ancient or pypi_no_release
+        except Category.DoesNotExist:
             pypi_ancient = False
             pypi_no_release = False
-        else:
-            pypi_ancient = package.pypi_ancient
-            pypi_no_release = package.pypi_ancient is None
-        warnings = no_development or pypi_ancient or pypi_no_release
-    except Category.DoesNotExist:
-        pypi_ancient = False
-        pypi_no_release = False
-        warnings = no_development
+            warnings = no_development
 
-    if request.GET.get("message"):
-        messages.add_message(request, messages.INFO, request.GET.get("message"))
+        if self.request.GET.get("message"):
+            messages.add_message(self.request, messages.INFO, self.request.GET.get("message"))
 
-    return render(
-        request,
-        template_name,
-        dict(
-            package=package,
-            pypi_ancient=pypi_ancient,
-            no_development=no_development,
-            pypi_no_release=pypi_no_release,
-            warnings=warnings,
-            latest_version=package.last_released(),
-            repo=package.repo,
-        ),
-    )
+        context.update(
+            {
+                "package": package,
+                "pypi_ancient": pypi_ancient,
+                "no_development": no_development,
+                "pypi_no_release": pypi_no_release,
+                "warnings": warnings,
+                "latest_version": package.last_released(),
+                "repo": package.repo,
+            }
+        )
+        return context
 
 
 def int_or_0(value):

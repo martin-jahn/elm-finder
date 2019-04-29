@@ -3,6 +3,8 @@ from django.views.generic.dates import ArchiveIndexView
 
 from apps.package.models import Package
 from apps.package.views import (
+    PackageDetailView,
+    PackageListView,
     add_example,
     add_package,
     ajax_package_list,
@@ -12,15 +14,13 @@ from apps.package.views import (
     edit_example,
     edit_package,
     github_webhook,
-    package_detail,
-    package_list,
     post_data,
     update_package,
     usage,
 )
 
 urlpatterns = [
-    url(regex=r"^$", view=package_list, name="packages"),
+    url(regex=r"^$", view=PackageListView.as_view(), name="packages"),
     url(
         regex=r"^latest/$",
         view=ArchiveIndexView.as_view(
@@ -40,7 +40,7 @@ urlpatterns = [
         view=confirm_delete_example,
         name="confirm_delete_example",
     ),
-    url(regex="^p/(?P<slug>[-\w]+)/$", view=package_detail, name="package"),
+    url(regex="^p/(?P<slug>[-\w]+)/$", view=PackageDetailView.as_view(), name="package"),
     url(regex="^ajax_package_list/$", view=ajax_package_list, name="ajax_package_list"),
     url(regex="^usage/(?P<slug>[-\w]+)/(?P<action>add|remove)/$", view=usage, name="usage"),
     url(regex="^(?P<slug>[-\w]+)/document/$", view=edit_documentation, name="edit_documentation"),

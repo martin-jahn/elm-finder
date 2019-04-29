@@ -7,8 +7,8 @@ from django.views.generic.base import TemplateView
 
 from apps.apiv4.viewsets import router
 from apps.core.apiv1 import apiv1_gone
-from apps.homepage.views import SitemapView, error_404_view, error_500_view, health_check_view, homepage
-from apps.package.views import category, python3_list
+from apps.homepage.views import HomepageView, SitemapView, error_404_view, error_500_view, health_check_view
+from apps.package.views import CategoryView, python3_list
 
 admin.autodiscover()
 
@@ -17,7 +17,7 @@ urlpatterns = [
     # url(r'^login/\{\{item\.absolute_url\}\}/', RedirectView.as_view(url="/login/github/")),
     url("^auth/", include("social_django.urls", namespace="social")),
     # url('', include('social_auth.urls')),
-    url(r"^$", homepage, name="home"),
+    url(r"^$", HomepageView.as_view(), name="home"),
     url(r"^health_check/$", health_check_view, name="health_check"),
     url(r"^404$", error_404_view, name="404"),
     url(r"^500$", error_500_view, name="500"),
@@ -26,8 +26,8 @@ urlpatterns = [
     url(r"^packages/", include("apps.package.urls")),
     url(r"^grids/", include("apps.grid.urls")),
     url(r"^feeds/", include("apps.feeds.urls")),
-    url(r"^categories/(?P<slug>[-\w]+)/$", category, name="category"),
-    url(r"^categories/$", homepage, name="categories"),
+    url(r"^categories/(?P<slug>[-\w]+)/$", CategoryView.as_view(), name="category"),
+    url(r"^categories/$", HomepageView.as_view(), name="categories"),
     url(r"^python3/$", python3_list, name="py3_compat"),
     # url(regex=r'^login/$', view=TemplateView.as_view(template_name='pages/login.html'), name='login',),
     url(r"^logout/$", LoginView.as_view(), name="logout", kwargs={"next_page": "/"}),

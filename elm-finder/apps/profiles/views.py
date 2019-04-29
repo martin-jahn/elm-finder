@@ -5,22 +5,32 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
+from utils.matomo.views import MatomoTrackMixin
 
 from apps.profiles.forms import ProfileForm
 from apps.profiles.models import Profile
 
 
-def profile_detail(request, github_account, template_name="profiles/profile.html"):
+class ProfileDetailView(MatomoTrackMixin, TemplateView):
+    template_name = "profiles/profile.html"
 
-    # ugly fix on duplicated profile pages.
-    # all of this should be migrated to be saved in the user model
-    try:
-        profile = get_object_or_404(Profile, github_account=github_account)
-    except MultipleObjectsReturned:
-        profile = Profile.objects.filter(github_account=github_account).latest("pk")
+    def get_page_title(self, context):
+        return f"Profile for {context['local_profile'].github_account}"
 
-    return render(request, template_name, {"local_profile": profile, "user": profile.user})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # ugly fix on duplicated profile pages.
+        # all of this should be migrated to be saved in the user model
+        try:
+            profile = get_object_or_404(Profile, github_account=kwargs["github_account"])
+        except MultipleObjectsReturned:
+            profile = Profile.objects.filter(github_account=kwargs["github_account"]).latest("pk")
+
+        context.update({"local_profile": profile, "user": profile.user})
+        return context
 
 
 class ProfileEditUpdateView(LoginRequiredMixin, UpdateView):
