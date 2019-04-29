@@ -10,7 +10,7 @@ from django.template.defaultfilters import slugify
 env = envmax.Env()
 
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 DEBUG = True
 
@@ -159,7 +159,7 @@ EMAIL_DEBUG = DEBUG
 
 CACHE_TIMEOUT = 5 * 60
 
-ROOT_URLCONF = "urls"
+ROOT_URLCONF = "elm_finder.urls"
 
 SECRET_KEY = "CHANGEME"
 
@@ -233,7 +233,7 @@ LOGIN_REDIRECT_URL = "/"
 DATABASES = {"default": env.db("DATABASE_URL")}
 
 
-WSGI_APPLICATION = "wsgi.application"
+WSGI_APPLICATION = "elm_finder.wsgi.application"
 
 
 ADMIN_URL_BASE = environ.get("ADMIN_URL_BASE", r"^admin/")
