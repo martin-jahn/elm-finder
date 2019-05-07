@@ -7,10 +7,10 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
-from utils.matomo.views import MatomoTrackMixin
 
 from apps.profiles.forms import ProfileForm
 from apps.profiles.models import Profile
+from libs.matomo.views import MatomoTrackMixin
 
 
 class ProfileDetailView(MatomoTrackMixin, TemplateView):

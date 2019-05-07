@@ -1,7 +1,8 @@
 import time
 
 from django.conf import settings
-from utils.matomo.tasks import send_to_matomo
+
+from libs.matomo.tasks import send_to_matomo
 
 
 class MatomoTrackMixin:

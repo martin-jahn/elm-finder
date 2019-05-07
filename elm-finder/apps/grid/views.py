@@ -9,13 +9,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.forms import ElementForm, FeatureForm, GridForm, GridPackageForm
 from apps.grid.models import Element, Feature, Grid, GridPackage
 from apps.package.forms import PackageForm
 from apps.package.models import Package
 from apps.package.views import repo_data_for_js
+from libs.matomo.views import MatomoTrackMixin
 
 
 def build_element_map(elements):

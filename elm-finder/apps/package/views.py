@@ -14,13 +14,13 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
-from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.models import Grid
 from apps.homepage.models import Dpotw, Gotw
 from apps.package.forms import DocumentationForm, PackageExampleForm, PackageForm
 from apps.package.models import Category, Package, PackageExample
 from apps.package.repos import get_all_repos
+from libs.matomo.views import MatomoTrackMixin
 
 from .utils import quote_plus
 

@@ -1,11 +1,11 @@
 from rest_framework import mixins, routers, viewsets
 from rest_framework.response import Response
-from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.models import Grid
 from apps.package.models import Category, Package
 from apps.searchv2.models import SearchV2
 from apps.searchv2.views import search_function
+from libs.matomo.views import MatomoTrackMixin
 
 from .serializers import CategorySerializer, GridSerializer, PackageSerializer, SearchV2Serializer
 

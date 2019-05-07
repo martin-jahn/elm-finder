@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
-from utils.tests import load as utils_load
 
 from apps.profiles.models import Profile
+from libs.tests import load as utils_load
 
 
 def load():

@@ -1,4 +1,4 @@
-from utils.tests import load as utils_load
+from libs.tests import load as utils_load
 
 
 def load():
