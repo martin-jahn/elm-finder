@@ -15,7 +15,7 @@ add:
 	git add .
 
 
-format_code:
+format:
 	# fixes imports broken by black
 	isort -e -j 4 -rc -w $(line_width) .
 

@@ -18,10 +18,9 @@ def user_email(obj):
 user_email.short_description = "User email"
 
 
+@admin.register(Profile)
 class ProfileAdmin(VersionAdmin):
 
     search_fields = ("user__username", "github_account", "user__email", "email")
     list_display = ("github_account", "email", username, user_email)
-
-
-admin.site.register(Profile, ProfileAdmin)
+    raw_id_fields = ("user",)

@@ -4,10 +4,17 @@ from reversion.admin import VersionAdmin
 from apps.package.models import Category, Commit, Package, PackageExample, Version
 
 
+@admin.register(Category)
+class CategoryAdmin(VersionAdmin):
+    list_display = "title", "title_plural"
+
+
 class PackageExampleInline(admin.TabularInline):
     model = PackageExample
+    raw_id_fields = ("created_by",)
 
 
+@admin.register(Package)
 class PackageAdmin(VersionAdmin):
 
     save_on_top = True
@@ -47,24 +54,25 @@ class PackageAdmin(VersionAdmin):
             },
         ),
     )
+    raw_id_fields = "category", "created_by", "last_modified_by", "usage"
 
 
+@admin.register(Commit)
 class CommitAdmin(admin.ModelAdmin):
-    list_filter = ("package",)
+    list_display = ("package", "commit_date", "commit_hash")
+    raw_id_fields = ("package",)
 
 
+@admin.register(Version)
 class VersionLocalAdmin(admin.ModelAdmin):
     search_fields = ("package__title",)
+    raw_id_fields = ("package",)
 
 
+@admin.register(PackageExample)
 class PackageExampleAdmin(admin.ModelAdmin):
 
-    list_display = ("title",)
+    list_display = ("title", "active")
     search_fields = ("title",)
 
-
-admin.site.register(Category, VersionAdmin)
-admin.site.register(Package, PackageAdmin)
-admin.site.register(Commit, CommitAdmin)
-admin.site.register(Version, VersionLocalAdmin)
-admin.site.register(PackageExample, PackageExampleAdmin)
+    raw_id_fields = "package", "created_by"
