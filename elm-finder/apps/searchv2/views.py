@@ -8,7 +8,7 @@ from django.urls import reverse
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from apps.package.models import Package
-from apps.searchv2.builders import build_1
+from apps.searchv2.builders import build_index
 from apps.searchv2.forms import SearchForm
 from apps.searchv2.models import SearchV2
 from apps.searchv2.utils import clean_title, remove_prefix
@@ -22,7 +22,7 @@ def build_search(request, template_name="searchv2/build_results.html"):
 
     results = []
     if request.method == "POST":
-        results = build_1()
+        results = build_index()
 
     return render(request, template_name, {"results": results})
 

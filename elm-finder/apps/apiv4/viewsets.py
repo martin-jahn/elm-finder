@@ -5,11 +5,12 @@ from apps.grid.models import Grid
 from apps.package.models import Category, Package
 from apps.searchv2.models import SearchV2
 from apps.searchv2.views import search_function
+from utils.matomo.views import MatomoTrackMixin
 
 from .serializers import CategorySerializer, GridSerializer, PackageSerializer, SearchV2Serializer
 
 
-class SearchV2ViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class SearchV2ViewSet(MatomoTrackMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """Accepts a 'q' GET parameter. Results are currently sorted only by
         their weight.
     """
@@ -21,6 +22,7 @@ class SearchV2ViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         qr = request.GET.get("q", "")
         queryset = search_function(qr)[:20]
         serializer = SearchV2Serializer(queryset, many=True)
+        self.track_view('Search View')
         return Response(serializer.data)
 
 

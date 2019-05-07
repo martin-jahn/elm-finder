@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from apps.package.tests import initial_data
 from apps.profiles.models import Profile
-from apps.searchv2.builders import build_1
+from apps.searchv2.builders import build_index
 from apps.searchv2.models import SearchV2
 from apps.searchv2.views import search_function
 
@@ -39,7 +39,7 @@ class FunctionalPackageTest(TestCase):
         self.assertEqual(SearchV2.objects.count(), 6)
 
     def test_search_function(self):
-        build_1()
+        build_index()
         results = search_function("ser")
         self.assertEqual(results[0].title, "Serious Testing")
 
@@ -50,7 +50,7 @@ class ViewTest(TestCase):
         for user in User.objects.all():
             profile = Profile.objects.create(user=user)
             profile.save()
-        build_1()
+        build_index()
 
     def test_search(self):
         self.assertTrue(self.client.login(username="admin", password="admin"))

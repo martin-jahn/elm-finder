@@ -17,6 +17,7 @@ DEBUG = False
 # serve media through the staticfiles app.
 SERVE_MEDIA = DEBUG
 
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.CachedStaticFilesStorage"
 
 RESTRICT_PACKAGE_EDITORS = False
 RESTRICT_GRID_EDITORS = True

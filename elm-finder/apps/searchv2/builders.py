@@ -1,7 +1,6 @@
-import json
 from datetime import datetime, timedelta
 
-import requests
+from django.db.models import Count
 
 from apps.grid.models import Grid
 from apps.package.models import Commit, Package
@@ -9,7 +8,7 @@ from apps.searchv2.models import SearchV2
 from apps.searchv2.utils import clean_title, remove_prefix
 
 
-def build_1():
+def build_index():
 
     now = datetime.now()
     quarter_delta = timedelta(90)
@@ -18,7 +17,7 @@ def build_1():
     last_week = now - timedelta(7)
 
     SearchV2.objects.filter(created__lte=last_week).delete()
-    for package in Package.objects.filter():
+    for package in Package.objects.select_related("category").annotate(used_by=Count("usage")).filter():
 
         obj, created = SearchV2.objects.get_or_create(item_type="package", slug=package.slug)
         obj.slug_no_prefix = remove_prefix(package.slug)
@@ -31,7 +30,7 @@ def build_1():
         obj.repo_watchers = package.repo_watchers
         obj.repo_forks = package.repo_forks
         obj.pypi_downloads = package.pypi_downloads
-        obj.usage = package.usage.count()
+        obj.usage = package.used_by
         obj.participants = package.participants
 
         optional_save = False
@@ -54,14 +53,6 @@ def build_1():
         # Weighting part
         weight = 0
         optional_save = False
-
-        # Read the docs!
-        rtfd_url = "http://readthedocs.org/api/v1/build/{0}/".format(obj.slug)
-        r = requests.get(rtfd_url)
-        if r.status_code == 200:
-            data = json.loads(r.content)
-            if data["meta"]["total_count"]:
-                weight += 20
 
         if obj.description.strip():
             weight += 20
