@@ -1,4 +1,4 @@
-.PHONY: all commit add format_code
+.PHONY: all commit add format
 line_width := 120
 
 all:
@@ -6,17 +6,17 @@ all:
 
 
 commit:
-	$(MAKE) -C . format_code
+	$(MAKE) -C . format
 	git commit -a
 
 
 add:
-	$(MAKE) -C . format_code
+	$(MAKE) -C . format
 	git add .
 
 
 format:
 	# fixes imports broken by black
-	isort -e -j 4 -rc -w $(line_width) .
+	isort -e -j 4 -rc -p libs w $(line_width) .
 
 	black -t py36 -l $(line_width) .

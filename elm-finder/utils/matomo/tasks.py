@@ -6,27 +6,32 @@ from elm_finder.celery import app
 
 
 @app.task
-def send_to_matomo(ip, user_agent, page_title, page_url, referer, language, country):
+def send_to_matomo(tracking_data, response_time):
     token = settings.MATOMO_TOKEN
-    if not token or settings.DEBUG:
+    if not token:
         return
-
 
     data = {
         "idsite": settings.MATOMO_SITE_ID,
         "token_auth": token,
-        "cip": ip,
-        "action_name": page_title,
-        "url": page_url,
+        "cip": tracking_data["ip"],
+        "action_name": tracking_data["page_title"],
+        "url": tracking_data["url"],
         "rand": randint(0, 1234567890),
         "apiv": 1,
-        "urlref": referer,
-        "ua": user_agent,
-        "lang": language,
+        "urlref": tracking_data["referer"],
+        "ua": tracking_data["user_agent"],
+        "lang": tracking_data["language"],
         "rec": 1,
+        "gt_ms": response_time,
     }
 
-    if country:
-        data['country'] = country
+    try:
+        data.update(tracking_data["extra"])
+    except KeyError:
+        pass
 
-    r = requests.get(settings.MATOMO_URL, params=data)
+    if not tracking_data["country"]:
+        tracking_data.pop("country")
+
+    requests.get(settings.MATOMO_URL, params=data)

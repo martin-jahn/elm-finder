@@ -61,7 +61,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(PROJECT_ROOT, "static")]
 
 
-
 # Use the default admin media prefix, which is...
 # ADMIN_MEDIA_PREFIX = "/static/admin/"
 

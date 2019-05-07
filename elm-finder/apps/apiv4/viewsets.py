@@ -1,11 +1,11 @@
 from rest_framework import mixins, routers, viewsets
 from rest_framework.response import Response
+from utils.matomo.views import MatomoTrackMixin
 
 from apps.grid.models import Grid
 from apps.package.models import Category, Package
 from apps.searchv2.models import SearchV2
 from apps.searchv2.views import search_function
-from utils.matomo.views import MatomoTrackMixin
 
 from .serializers import CategorySerializer, GridSerializer, PackageSerializer, SearchV2Serializer
 
@@ -20,9 +20,14 @@ class SearchV2ViewSet(MatomoTrackMixin, mixins.ListModelMixin, viewsets.GenericV
 
     def list(self, request):
         qr = request.GET.get("q", "")
-        queryset = search_function(qr)[:20]
+
+        search_qs = search_function(qr)
+        search_count = search_qs.count()
+        queryset = search_qs[:20]
+
         serializer = SearchV2Serializer(queryset, many=True)
-        self.track_view('Search View')
+
+        self.track_view("Search View", search_count=search_count, search=qr)
         return Response(serializer.data)
 
 
