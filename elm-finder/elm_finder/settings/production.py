@@ -32,6 +32,20 @@ sentry_sdk.init(dsn=environ.get("SENTRY_DSN"), integrations=[DjangoIntegration()
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 
+########## CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env.str("REDIS_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,  # mimics memcache behavior.
+            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+        },
+    }
+}
+
+
 # If not defined create random key in production default in base.py is pretty terrible idea
 if not hasattr(globals(), "SECRET_KEY"):
     SECRET_FILE = os.path.join(PROJECT_ROOT, "secret.txt")
