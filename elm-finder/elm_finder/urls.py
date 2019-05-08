@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
+from django.urls import path
 from django.views.generic.base import TemplateView
 
 from apps.apiv4.viewsets import router
@@ -51,6 +52,7 @@ urlpatterns = [
     # url(r'^api/v1/', include('core.apiv1', namespace="apitest")),
     # reports
     # url(r'^reports/', include('reports.urls', namespace='reports')),
+    path('elm/', include('apps.elm.urls')),
 ]
 
 
