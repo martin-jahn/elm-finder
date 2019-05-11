@@ -90,3 +90,9 @@ fabric.properties
 # Direnv file
 # Direnv file
 .envrc
+
+
+### ELM pakcages
+elm-stuff
+node_modules
+elm-finder/static/js/elm*

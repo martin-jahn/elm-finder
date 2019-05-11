@@ -1,14 +1,10 @@
 {% spaceless %}
 {% load i18n profile_tags static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}" {% block angular_header %}ng-app{% endblock angular_header %}>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	{% block angularjs %}
-		<script src="{% static 'angular/angular.min.js' %}"></script>
-		<script src="{% static 'angular/controllers.js' %}"></script>
-	{% endblock angularjs %}
 	<title>{% block head_title_base %}{{ SITE_TITLE }} : {% block head_title %}{% endblock %}{% endblock %}</title>
 
 	<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" type="text/css" />
@@ -19,7 +15,7 @@
 	<link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
     {% block extra_head %}{% endblock %}
 </head>
-<body ng-controller="SearchCtrl" ng-init="init_search('{{ request.GET.q|escapejs }}', '{% url 'apiv4:searchv2-list' %}', {{ MAX_WEIGHT }})">
+<body>
 
 {% for message in messages %}
 	<div class="topbar topbar-default{% if message.tags %} {{ message.tags }}{% endif %}" id="message_{{ forloop.counter }}">
@@ -41,59 +37,8 @@
 			</a>
 
 			{# Main nav #}
+			<div id="elm-search"></div>
 
-			<form action="{% url 'search' %}" class="navbar-form pull-left hidden-xs">
-				<input type="text" name="q" class="col-12 form-control" style="width: 240px;" id="search-2" ng-model="model.q" ng-keyup="search(model, '{% url 'apiv4:searchv2-list' %}')" placeholder="Search" autocomplete="off">
-			</form>
-		<div class="container" ng-show="items">
-	<div class="row">
-		<div class="col-12">
-			<table class="table">
-				<thead>
-				<tr>
-					<th>Search Weight</th>
-					<th>Package</th>
-					<th>Description</th>
-					<th>Last commit:</th>
-					<th>Repo Forks</th>
-					<th>Stars</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% verbatim %}
-				<tr ng-repeat="item in items">
-					<td>{{ item.weight / max_weight * 100 | number:0 }}%</td>
-					<td>
-						<a ng-href="{{ item.absolute_url }}">{{ item.title }}</a>
-					</td>
-					<td>
-						<strong ng-if="item.item_type=='grid'">Grid:</strong>
-						{{ item.description }}
-					</td>
-
-					<td ng-if="item.item_type=='package'">
-						{{ item.last_committed | date: 'mediumDate' }}
-					</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-					<td  ng-if="item.item_type=='package'">
-						{{ item.repo_forks }}
-					</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-					<td  ng-if="item.item_type=='package'">{{ item.repo_watchers }}</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-				</tr>
-				{% endverbatim %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
 
 			<ul class="nav navbar-nav navbar-right hidden-xs">
 				{% if request.user.is_authenticated %}
@@ -145,61 +90,11 @@
 </div>
 {% block pre_body %}{% endblock %}
 {% block breadcrumb %}{% endblock %}
-<div class="container" ng-hide="items">
+<div class="container">
 	{% block body %}
 	{% endblock %}
 </div>
-{% comment %}
-<div class="container" ng-show="items">
-	<div class="row">
-		<div class="col-12">
-			<table class="table">
-				<thead>
-				<tr>
-					<th>Search Weight</th>
-					<th>Package</th>
-					<th>Description</th>
-					<th>Last commit:</th>
-					<th>Repo Forks</th>
-					<th>Stars</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% verbatim %}
-				<tr ng-repeat="item in items">
-					<td>{{ item.weight / max_weight * 100 | number:0 }}%</td>
-					<td>
-						<a ng-href="{{ item.absolute_url }}">{{ item.title }}</a>
-					</td>
-					<td>
-						<strong ng-if="item.item_type=='grid'">Grid:</strong>
-						{{ item.description }}
-					</td>
 
-					<td ng-if="item.item_type=='package'">
-						{{ item.last_committed | date: 'mediumDate' }}
-					</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-					<td  ng-if="item.item_type=='package'">
-						{{ item.repo_forks }}
-					</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-					<td  ng-if="item.item_type=='package'">{{ item.repo_watchers }}</td>
-					<td ng-if="item.item_type=='grid'">
-						N/A
-					</td>
-				</tr>
-				{% endverbatim %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
-{% endcomment %}
 <div class="container pre-pre-footer">
 	<div class="row">
 		<div class="col-sm-12 text-center">
@@ -245,10 +140,15 @@
 
 
 {% block javascript %}
+	<script src="{% static 'js/elm-compiled.js' %}" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var app = Elm.Main.init({ node: document.querySelector('#elm-search') })
+	</script>
 	<script src="{% static 'bower_components/jquery/jquery.min.js' %}" type="text/javascript"></script>
-	<script src="{% static 'components/audreyr-rotatingnav/dist/jquery.rotatingnav.min.js' %}"></script>
-	<script src="{% static 'components/audreyr-topbar/dist/jquery.topbar.min.js' %}"></script>
-	<script src="{% static 'js/jquery.tablesorter.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'components/audreyr-rotatingnav/dist/jquery.rotatingnav.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'components/audreyr-topbar/dist/jquery.topbar.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/jquery.tablesorter.min.js' %}" type="text/javascript" type="text/javascript"></script>
 	<script src="{% static 'js/jquery.tools.min.js' %}" type="text/javascript"></script>
 	<script src="{% static 'js/site.js' %}" type="text/javascript"></script>
 {% endblock javascript %}

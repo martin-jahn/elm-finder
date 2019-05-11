@@ -20,6 +20,8 @@ class SearchV2ViewSet(MatomoTrackMixin, mixins.ListModelMixin, viewsets.GenericV
 
     def list(self, request):
         qr = request.GET.get("q", "")
+        if qr == '':
+            return Response({'entries': []})
 
         search_qs = search_function(qr)
         search_count = search_qs.count()
@@ -28,7 +30,7 @@ class SearchV2ViewSet(MatomoTrackMixin, mixins.ListModelMixin, viewsets.GenericV
         serializer = SearchV2Serializer(queryset, many=True)
 
         self.track_view("Search View", search_count=search_count, search=qr)
-        return Response(serializer.data)
+        return Response({'entries':serializer.data})
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
