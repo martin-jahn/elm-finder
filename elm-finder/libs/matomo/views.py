@@ -18,6 +18,10 @@ class MatomoTrackMixin:
         self.track_view(page_title)
 
     def track_view(self, page_title, **kwargs):
+        # distinguish between staff and other visits to the site
+        if self.request.user.is_staff:
+            kwargs["uid"] = self.request.user.username
+
         self.tracking_data = {
             "page_title": page_title,
             "user_agent": self.request.headers.get("user-agent"),
