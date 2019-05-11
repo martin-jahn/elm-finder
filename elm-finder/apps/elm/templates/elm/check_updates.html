@@ -3,6 +3,7 @@
 {% load package_tags %}
 {% load sorting_tags %}
 {% load elm_tags %}
+{% load crispy_forms_filters %}
 
 {% block head_title %}Version checker{% endblock %}
 
@@ -21,57 +22,57 @@
 {% endblock %}
 
 {% block body %}
-	<div class="row">
-
-		<div class="col-xs-6">
-			<p>{{ category.description }}</p>
-		</div>
-		<div class="col-xs-6">
-			<form action="" method="post" enctype="multipart/form-data">
-				{% csrf_token %}
-				{{ form.as_p }}
-				<input type="submit" value="FUck">
-			</form>
-		</div>
+	<div class="container">
+		<h2>Elm version checker</h2>
+		<p>
+			Upload your elm.json file and Elm Finder will check for your updates. This file is not stored on the server in any way. So you don't have to vorry about your data.
+		</p>
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<input class="btn btn-primary btn-lg" type="submit" value="Upload">
+		</form>
 	</div>
 
 	<div class="row">
 		<div class="col-xs-12">
-{#			{% autosort packages %}#}
-			<table class="table">
-				<thead>
-				<tr>
-					<th>{% anchor usage_count "# Using This" %}</th>
-					<th>Development Status</th>
-					<th>{% anchor title "Name" %}</th>
-
-					<th>Commits</th>
-					<th>Your version</th>
-					<th>Version</th>
-					<th>{% anchor repo_watchers "Stars" %}</th>
-					<th>{% anchor repo_forks "Forks" %}</th>
-				</tr>
-				</thead>
-
-				<tbody>
-				{% for package in packages %}
+			{% if packages %}
+				{% autosort packages %}
+				<table class="table">
+					<thead>
 					<tr>
-						<td class="usage-container usage-holder">
-							{% usage_button %}
+						<th>{% anchor usage_count "# Using This" %}</th>
+						<th>Development Status</th>
+						<th>{% anchor title "Name" %}</th>
 
-							<span class="usage-count">{{ package.usage_count }}</span>
-						</td>
-						<td>{{ package.last_released.pretty_status }}</td>
-						<td><a href="{% url 'package' package.slug %}">{{ package.title }}</a></td>
-						<td><img class="package-githubcommits" src="https://chart.googleapis.com/chart?cht=bvg&chs=105x20&chd=t:{{package.commits_over_52}}&chco=666666&chbh=1,1,1&chds=0,20" alt="package commits" /></td>
-						<td>{% shown_users_version package %}</td>
-						<td>{{ package.pypi_version }}</td>
-						<td>{{ package.repo_watchers }}</td>
-						<td>{{ package.repo_forks }}</td>
+						<th>Commits</th>
+						<th>Your version</th>
+						<th>Version</th>
+						<th>{% anchor repo_watchers "Stars" %}</th>
+						<th>{% anchor repo_forks "Forks" %}</th>
 					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+					</thead>
+
+					<tbody>
+					{% for package in packages %}
+						<tr>
+							<td class="usage-container usage-holder">
+								{% usage_button %}
+
+								<span class="usage-count">{{ package.usage_count }}</span>
+							</td>
+							<td>{{ package.last_released.pretty_status }}</td>
+							<td><a href="{% url 'package' package.slug %}">{{ package.title }}</a></td>
+							<td><img class="package-githubcommits" src="https://chart.googleapis.com/chart?cht=bvg&chs=105x20&chd=t:{{package.commits_over_52}}&chco=666666&chbh=1,1,1&chds=0,20" alt="package commits" /></td>
+							<td>{% shown_users_version package %}</td>
+							<td>{{ package.pypi_version }}</td>
+							<td>{{ package.repo_watchers }}</td>
+							<td>{{ package.repo_forks }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}
