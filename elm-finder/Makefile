@@ -17,6 +17,6 @@ add:
 
 format:
 	# fixes imports broken by black
-	isort -e -j 4 -rc -p libs w $(line_width) .
+	isort -e -j 4 -rc -p libs -w $(line_width) .
 
 	black -t py36 -l $(line_width) .

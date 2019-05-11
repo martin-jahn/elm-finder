@@ -1,7 +1,7 @@
 {% spaceless %}
 {% load i18n profile_tags static %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -130,8 +130,8 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-12">
-				&copy; 2010-{% now "Y" %} <a href="https://github.com/martin-jahn/elm-finder/blob/master/CONTRIBUTORS.txt">Contributors</a>, currently maintained and hosted by <a href="https://discourse.elm-lang.org/u/martin-jahn">Martin Jahn</a>.<br/>
-				Uses data from <a href="https://github.com/">GitHub</a> and <a href="http://package.elm-lang.org">Elm Packages</a>.
+				&copy; 2010-{% now "Y" %} <a href="https://github.com/martin-jahn/elm-finder/blob/master/CONTRIBUTORS.txt" target="_blank" rel="noopener noreferrer">Contributors</a>, currently maintained and hosted by <a href="https://discourse.elm-lang.org/u/martin-jahn">Martin Jahn</a>.<br/>
+				Uses data from <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a> and <a href="http://package.elm-lang.org" target="_blank" rel="noopener noreferrer">Elm Packages</a>.
 
 			</div>
 		</div>

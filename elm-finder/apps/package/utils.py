@@ -34,7 +34,7 @@ def uniquer(seq, idfun=None):
 
 def get_version(package):
 
-    versions = package.version_set.exclude(upload_time=None)
+    versions = package.versions.exclude(upload_time=None)
     try:
         return versions.latest()
     except models.ObjectDoesNotExist:
@@ -43,7 +43,7 @@ def get_version(package):
 
 def get_pypi_version(package):
     versions = []
-    for v_str in package.version_set.values_list("number", flat=True):
+    for v_str in package.versions.values_list("number", flat=True):
         v = versioner(v_str)
         comparable = True
         for elem in v.version:

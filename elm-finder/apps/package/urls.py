@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.views.generic import RedirectView
 from django.views.generic.dates import ArchiveIndexView
 
 from apps.package.models import Package
@@ -40,7 +41,8 @@ urlpatterns = [
         view=confirm_delete_example,
         name="confirm_delete_example",
     ),
-    url(regex="^p/(?P<slug>[-\w]+)/$", view=PackageDetailView.as_view(), name="package"),
+    url(regex="^p/(?P<slug>[-\w]+)/$", view=RedirectView.as_view(pattern_name="package", permanent=True)),
+    url(regex="^(?P<slug>[-\w]+)/$", view=PackageDetailView.as_view(), name="package"),
     url(regex="^ajax_package_list/$", view=ajax_package_list, name="ajax_package_list"),
     url(regex="^usage/(?P<slug>[-\w]+)/(?P<action>add|remove)/$", view=usage, name="usage"),
     url(regex="^(?P<slug>[-\w]+)/document/$", view=edit_documentation, name="edit_documentation"),

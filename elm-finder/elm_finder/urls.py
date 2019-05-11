@@ -52,7 +52,7 @@ urlpatterns = [
     # url(r'^api/v1/', include('core.apiv1', namespace="apitest")),
     # reports
     # url(r'^reports/', include('reports.urls', namespace='reports')),
-    path('elm/', include('apps.elm.urls')),
+    path("elm/", include("apps.elm.urls")),
 ]
 
 

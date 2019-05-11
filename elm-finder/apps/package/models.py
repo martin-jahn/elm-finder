@@ -6,6 +6,7 @@ from distutils.version import LooseVersion as versioner
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -113,7 +114,7 @@ class Package(BaseModel):
     @property
     def license_latest(self):
         try:
-            return self.version_set.latest().license
+            return self.versions.latest().license
         except Version.DoesNotExist:
             return "UNKNOWN"
 
@@ -365,7 +366,7 @@ class VersionManager(models.Manager):
 
 class Version(BaseModel):
 
-    package = models.ForeignKey(Package, blank=True, null=True, on_delete=CASCADE)
+    package = models.ForeignKey(Package, blank=True, null=True, on_delete=CASCADE, related_name="versions")
     number = models.CharField(_("Version"), max_length=100, default="", blank="")
     downloads = models.IntegerField(_("downloads"), default=0)
     license = models.CharField(_("license"), max_length=100)
@@ -404,6 +405,9 @@ class Version(BaseModel):
         get_pypi_version(self.package)
 
         super(Version, self).save(*args, **kwargs)
+
+    def elm_packages_url(self):
+        return f"https://package.elm-lang.org/packages/{self.package.title}/{self.number}/"
 
     def __str__(self):
         return "%s: %s" % (self.package.title, self.number)

@@ -10,7 +10,7 @@ class VersionTests(TestCase):
 
     def test_version_order(self):
         p = Package.objects.get(slug="django-cms")
-        versions = p.version_set.by_version()
+        versions = p.versions.by_version()
         expected_values = ["2.0.0", "2.0.1", "2.0.2", "2.1.0", "2.1.1", "2.1.2", "2.1.3"]
         returned_values = [v.number for v in versions]
         self.assertEqual(returned_values, expected_values)

@@ -117,7 +117,7 @@ PROJECT_APPS = [
     "apps.feeds",
     "apps.searchv2",
     "apps.apiv3",
-    'apps.elm',
+    "apps.elm",
     "libs.matomo",
 ]
 

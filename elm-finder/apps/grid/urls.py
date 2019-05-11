@@ -1,6 +1,7 @@
 """grid url patterns"""
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.views.generic import RedirectView
 
 from apps.grid import views
 
@@ -16,7 +17,8 @@ urlpatterns = [
     url(r"^(?P<grid_slug>[a-z0-9\-_]+)/package/add/new$", view=views.add_new_grid_package, name="add_new_grid_package"),
     url(r"^ajax_grid_list/$", view=views.AjaxGridListView.as_view(), name="ajax_grid_list"),
     url(r"^$", view=views.grids, name="grids"),
-    url(r"^g/(?P<slug>[-\w]+)/$", view=views.GridDetailView.as_view(), name="grid"),
-    url(r"^g/(?P<slug>[-\w]+)/landscape/$", view=views.grid_detail_landscape, name="grid_landscape"),
-    url(r"^g/(?P<slug>[-\w]+)/timesheet/$", view=views.GridTimesheetView.as_view(), name="grid_timesheet"),
+    url(r"^g/(?P<slug>[-\w]+)/$", view=RedirectView.as_view(pattern_name="grid", permanent=True)),
+    url(r"^(?P<slug>[-\w]+)/$", view=views.GridDetailView.as_view(), name="grid"),
+    url(r"^(?P<slug>[-\w]+)/landscape/$", view=views.grid_detail_landscape, name="grid_landscape"),
+    url(r"^(?P<slug>[-\w]+)/timesheet/$", view=views.GridTimesheetView.as_view(), name="grid_timesheet"),
 ]
