@@ -1,0 +1,15 @@
+<div class="col-md-4 sidebar">
+	<h3>Useful links</h3>
+	<a href="{{ version.get_absolute_url }}">README</a>
+	<br>
+	<a href="{{ version.github_url }}" target="_blank" rel="noopener noreferrer">Source code</a>
+	<br>
+	<a href="{{ version.elm_packages_url }}" target="_blank" rel="noopener noreferrer">Elm Packages</a>
+
+	<h3>Module Docs</h3>
+	<ul>
+		{% for doc in docs %}
+			<li><a href="{{ doc.get_absolute_url }}">{{ doc.title }}</a></li>
+		{% endfor %}
+	</ul>
+</div>

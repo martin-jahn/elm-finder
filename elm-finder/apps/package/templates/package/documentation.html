@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load package_tags static %}
+
+{% block head_title %}{{ package.title }}{% endblock %}
+
+{% block extra_head %}
+	<meta name="description" content="{{ package.repo_description }}" />
+	<meta name="keywords" content="{{ package.grid_set.all|join:',' }}" />
+	<link rel="canonical" href="{{ version.get_latest_url }}">
+  {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>
+						<a href="{% url 'packages' %}">Packages</a> ›› <a href="{% url 'package' slug=package.slug %}">{{ package.title }}</a> ›› {{ version.number }}
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+	<div class="row">
+		<div class="col-md-6 main">
+			{{ version.readme|safe}}
+		</div>
+		{% include 'package/snippets/sidebar.html' %}
+	</div>
+{% endblock %}
+

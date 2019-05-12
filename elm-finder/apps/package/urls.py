@@ -4,7 +4,9 @@ from django.views.generic.dates import ArchiveIndexView
 
 from apps.package.models import Package
 from apps.package.views import (
+    DocView,
     PackageDetailView,
+    PackageDocsView,
     PackageListView,
     add_example,
     add_package,
@@ -42,6 +44,13 @@ urlpatterns = [
         name="confirm_delete_example",
     ),
     url(regex="^p/(?P<slug>[-\w]+)/$", view=RedirectView.as_view(pattern_name="package", permanent=True)),
+    url(
+        regex="^(?P<slug>[-\w]+)/docs$",
+        view=RedirectView.as_view(pattern_name="docs", permanent=True),
+        kwargs={"version": "latest"},
+    ),
+    url(regex="^(?P<slug>[-\w]+)/docs/(?P<version>[-\w.]+)/$", view=PackageDocsView.as_view(), name="docs"),
+    url(regex="^(?P<slug>[-\w]+)/docs/(?P<version>[-\w.]+)/(?P<title>[-\w.]+)/$", view=DocView.as_view(), name="docs"),
     url(regex="^(?P<slug>[-\w]+)/$", view=PackageDetailView.as_view(), name="package"),
     url(regex="^ajax_package_list/$", view=ajax_package_list, name="ajax_package_list"),
     url(regex="^usage/(?P<slug>[-\w]+)/(?P<action>add|remove)/$", view=usage, name="usage"),

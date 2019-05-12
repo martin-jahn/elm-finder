@@ -1,4 +1,4 @@
-.PHONY: all debug minify format build_prod
+.PHONY: all debug minify format production
 elm_files := $(wildcard src/*.elm)
 base_source := src/Main.elm
 js_output := ../elm-finder/static/js/elm-main.js

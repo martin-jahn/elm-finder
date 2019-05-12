@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from apps.package.models import Category, Commit, Package, PackageExample, Version
+from apps.package.models import Category, Commit, Doc, Package, PackageExample, Version
 
 
 @admin.register(Category)
@@ -80,3 +80,13 @@ class PackageExampleAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
     raw_id_fields = "package", "created_by"
+
+
+@admin.register(Doc)
+class DocAdmin(admin.ModelAdmin):
+    list_display = "title", "version", "order"
+    raw_id_fields = ("version",)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related("version__package")

@@ -118,6 +118,10 @@ class Package(BaseModel):
         except Version.DoesNotExist:
             return "UNKNOWN"
 
+    @property
+    def latest_docs_url(self):
+        return reverse("docs", kwargs={"slug": self.slug, "version": "latest"})
+
     def grids(self):
 
         return (x.grid for x in self.gridpackage_set.all())
@@ -377,11 +381,15 @@ class Version(BaseModel):
     development_status = models.IntegerField(_("Development Status"), choices=STATUS_CHOICES, default=0)
     supports_python3 = models.BooleanField(_("Supports Python 3"), default=False)
 
+    readme = models.TextField(null=True, blank=True)
+    encoded_readme = models.TextField(null=True, blank=True)
+
     objects = VersionManager()
 
     class Meta:
         get_latest_by = "upload_time"
         ordering = ["-upload_time"]
+        unique_together = ("package", "number")
 
     @property
     def pretty_license(self):
@@ -390,6 +398,22 @@ class Version(BaseModel):
     @property
     def pretty_status(self):
         return self.get_development_status_display().split(" ")[-1]
+
+    @property
+    def get_absolute_url(self):
+        return reverse("docs", kwargs={"slug": self.package.slug, "version": self.number})
+
+    @property
+    def get_latest_url(self):
+        return reverse("docs", kwargs={"slug": self.package.slug, "version": "latest"})
+
+    @property
+    def elm_packages_url(self):
+        return f"https://package.elm-lang.org/packages/{self.package.title}/{self.number}/"
+
+    @property
+    def github_url(self):
+        return f"{self.package.repo_url}/tree/{self.number}"
 
     def save(self, *args, **kwargs):
         self.license = normalize_license(self.license)
@@ -406,8 +430,30 @@ class Version(BaseModel):
 
         super(Version, self).save(*args, **kwargs)
 
-    def elm_packages_url(self):
-        return f"https://package.elm-lang.org/packages/{self.package.title}/{self.number}/"
-
     def __str__(self):
         return "%s: %s" % (self.package.title, self.number)
+
+
+class Doc(models.Model):
+    version = models.ForeignKey(Version, on_delete=CASCADE, related_name="docs")
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    encoded_content = JSONField()
+
+    order = models.IntegerField()
+
+    class Meta:
+        unique_together = ("version", "order")
+
+    @property
+    def get_absolute_url(self):
+        return reverse(
+            "docs", kwargs={"slug": self.version.package.slug, "version": self.version.number, "title": self.title}
+        )
+
+    @property
+    def get_latest_url(self):
+        return reverse("docs", kwargs={"slug": self.version.package.slug, "version": "latest", "title": self.title})
+
+    def __str__(self):
+        return f"{self.id}/{self.title}"

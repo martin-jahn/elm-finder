@@ -18,11 +18,9 @@ from django.views.generic import TemplateView
 from apps.grid.models import Grid
 from apps.homepage.models import Dpotw, Gotw
 from apps.package.forms import DocumentationForm, PackageExampleForm, PackageForm
-from apps.package.models import Category, Package, PackageExample
+from apps.package.models import Category, Package, PackageExample, Version
 from apps.package.repos import get_all_repos
 from libs.matomo.views import MatomoTrackMixin
-
-from .utils import quote_plus
 
 
 def repo_data_for_js():
@@ -318,6 +316,43 @@ class PackageListView(MatomoTrackMixin, TemplateView):
         context.update(
             {"categories": categories, "dpotw": Dpotw.objects.get_current(), "gotw": Gotw.objects.get_current()}
         )
+        return context
+
+
+class PackageDocsView(MatomoTrackMixin, TemplateView):
+    template_name = "package/documentation.html"
+
+    def get_page_title(self, context):
+        return f'Package / {context["package"].title} / {context["version"].number}'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if kwargs["version"] == "latest":
+            package = get_object_or_404(Package, slug=kwargs["slug"])
+
+            version_number = package.pypi_version()
+            version = package.versions.get(number=version_number)
+        else:
+            version = get_object_or_404(
+                Version.objects.select_related("package"), package__slug=kwargs["slug"], number=kwargs["version"]
+            )
+
+        context["version"] = version
+        context["package"] = version.package
+        context["docs"] = version.docs.all().order_by("order")
+        return context
+
+
+class DocView(PackageDocsView):
+    template_name = "package/doc.html"
+
+    def get_page_title(self, context):
+        return f'Package / {context["package"].title} / {context["version"].number} / {context["doc"].title}'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["doc"] = get_object_or_404(context["version"].docs, title=kwargs["title"])
         return context
 
 
