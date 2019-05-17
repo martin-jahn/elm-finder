@@ -5,7 +5,7 @@
 {% load elm_tags %}
 {% load crispy_forms_filters %}
 
-{% block head_title %}Version checker{% endblock %}
+{% block head_title %}Update checker{% endblock %}
 
 {% block body_class %}home{% endblock %}
 
@@ -25,7 +25,8 @@
 	<div class="container">
 		<h2>Elm version checker</h2>
 		<p>
-			Upload your elm.json file and Elm Finder will check for your updates. This file is not stored on the server in any way. So you don't have to vorry about your data.
+			Upload your elm.json file and Elm Finder will check for updates. Versions in elm.json are checked to the versions listed on Elm Finder. So it does not have to be in sync with Elm Packages.
+			This file is not stored on the server in any way. So you don't have to worry about your data.
 		</p>
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}

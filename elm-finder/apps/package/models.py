@@ -88,6 +88,10 @@ class Package(BaseModel):
             return name[: name.index("/")]
         return name
 
+    @property
+    def elm_name(self):
+        return self.title.split("/")[1]
+
     def last_updated(self):
         cache_name = self.cache_namer(self.last_updated)
         last_commit = cache.get(cache_name)
