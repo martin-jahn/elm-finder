@@ -1,3 +1,4 @@
+from datetime import datetime
 from time import sleep
 
 import markdown
@@ -8,7 +9,7 @@ from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
 from tqdm import tqdm
 
-from apps.package.models import Category, Package
+from apps.package.models import Category, Package, Version
 
 
 class Command(BaseCommand):
@@ -140,14 +141,27 @@ class Command(BaseCommand):
             text, extensions=[CodeHiliteExtension(linenums=False, noclasses=True), FencedCodeExtension()]
         )
 
+    def update_versions(self, package):
+        r = requests.get(f"https://package.elm-lang.org/packages/{package.title}/releases.json")
+        r.raise_for_status()
+
+        version = package.versions.first()
+
+        for number, timestamp_released in r.json().items():
+            Version.objects.update_or_create(
+                package=package,
+                number=number,
+                defaults={"license": version.license, "upload_time": datetime.utcfromtimestamp(timestamp_released)},
+            )
+
     def handle(self, *args, **options):
         category = Category.objects.get(slug="libraries")
+        packages = Package.objects.filter(category=category).order_by("id")
 
-        for package in tqdm(
-            Package.objects.filter(category=category).order_by("id").iterator(),
-            total=Package.objects.filter(category=category).count(),
-        ):
-            for version in package.versions.all():
+        for package in tqdm(packages.iterator(), total=packages.count()):
+            self.update_versions(package)
+
+            for version in package.versions.filter(readme__isnull=True):
                 with transaction.atomic():
                     r = requests.get(
                         f"https://package.elm-lang.org/packages/{package.title}/{version.number}/README.md"

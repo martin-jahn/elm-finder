@@ -103,7 +103,11 @@ class Package(BaseModel):
                 cache.set(cache_name, last_commit)
                 return last_commit
         except ObjectDoesNotExist:
-            last_commit = None
+            pass
+
+        version = self.last_released()
+        if version:
+            return version.upload_time
 
         return last_commit
 

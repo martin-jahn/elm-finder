@@ -25,7 +25,7 @@
 	<div class="container">
 		<h2>Elm version checker</h2>
 		<p>
-			Upload your elm.json file and Elm Finder will check for updates. Versions in elm.json are checked to the versions listed on Elm Finder. So it does not have to be in sync with Elm Packages.
+			Upload your elm.json file and Elm Finder will check for updates. Versions in elm.json are checked to the versions in our database. So it does not have to be in sync with Elm Packages.
 			This file is not stored on the server in any way. So you don't have to worry about your data.
 		</p>
 		<form action="" method="post" enctype="multipart/form-data">
@@ -38,7 +38,6 @@
 	<div class="row">
 		<div class="col-xs-12">
 			{% if packages %}
-				{% autosort packages %}
 				<table class="table">
 					<thead>
 					<tr>
@@ -49,8 +48,9 @@
 						<th>Commits</th>
 						<th>Your version</th>
 						<th>Version</th>
-						<th>{% anchor repo_watchers "Stars" %}</th>
-						<th>{% anchor repo_forks "Forks" %}</th>
+						<th>Stars</th>
+						<th>Forks</th>
+						<th>Released</th>
 					</tr>
 					</thead>
 
@@ -69,6 +69,7 @@
 							<td>{{ package.pypi_version }}</td>
 							<td>{{ package.repo_watchers }}</td>
 							<td>{{ package.repo_forks }}</td>
+							<td>{{package.last_updated|date:"DATETIME_FORMAT" }}</td>
 						</tr>
 					{% endfor %}
 					</tbody>

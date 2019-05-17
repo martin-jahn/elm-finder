@@ -136,28 +136,28 @@
                             {% endwith %}
                         </td>
                     {% endfor %}
-                </td>
+                </tr>
 {#                <tr>#}
 {#                    <td>{% trans "Python 3?" %}</td>#}
 {#                    {% for grid_package in grid_packages %}#}
 {#                        <td>{% if grid_package.package.last_released.supports_python3 %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>#}
 {#                    {% endfor %}#}
 {#                </tr>#}
-                <tr>
-                    <td>{% trans "Development Status" %}</td>
-                    {% for grid_package in grid_packages %}
-                        <td>
-                            {% with pretty_status=grid_package.package.last_released.pretty_status %}
-                            {% if pretty_status %}
-                                {{ pretty_status|default:"n/a" }}
-                            {% else %}
-                                n/a
-                            {% endif %}
-                            {% endwith %}
-
-                        </td>
-                    {% endfor %}
-                </tr>
+{#                <tr>#}
+{#                    <td>{% trans "Development Status" %}</td>#}
+{#                    {% for grid_package in grid_packages %}#}
+{#                        <td>#}
+{#                            {% with pretty_status=grid_package.package.last_released.pretty_status %}#}
+{#                            {% if pretty_status %}#}
+{#                                {{ pretty_status|default:"n/a" }}#}
+{#                            {% else %}#}
+{#                                n/a#}
+{#                            {% endif %}#}
+{#                            {% endwith %}#}
+{##}
+{#                        </td>#}
+{#                    {% endfor %}#}
+{#                </tr>#}
                 <tr>
                     <td>{% trans "Last updated" %}</td>
                     {% for grid_package in grid_packages %}
