@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{% block head_title_base %}{% block head_title %}Elm Finder{% endblock %}{% endblock %}</title>
+	<title>{% block head_title_base %}{% block head_title %}{% endblock %} - {{ SITE_TITLE }}{% endblock %}</title>
 
 	<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'css/bootstrap-glyphicons.css' %}" type="text/css" />
